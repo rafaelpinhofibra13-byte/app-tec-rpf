@@ -1,0 +1,3348 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Super App Técnico - rafaelpinhofibra</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        :root {
+            --primary: #0056b3;
+            --secondary: #6c757d;
+            --vivo-purple: #660099;
+            --vivo-light: #f3e5f5;
+            --bg: #eef3f8;
+            --text: #2d3436;
+            --white: #ffffff;
+            --error: #ff7675;
+            --success: #55efc4;
+            --shadow: 0 18px 45px rgba(22, 47, 78, 0.12);
+            --radius: 18px;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+                background: linear-gradient(145deg, #102b4a 0%, #071321 52%, #1b5a73 100%);
+            color: var(--text);
+            margin: 0;
+            padding: 44px 20px 28px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            display: block;
+            flex: 0 0 38px;
+            width: calc(100% + 40px);
+            margin: -20px 0 16px -20px;
+            background: linear-gradient(135deg, #102b4a, #071321 55%, #1b5a73);
+            box-shadow: 0 4px 14px rgba(7, 19, 33, 0.24);
+        }
+
+        .container {
+            max-width: 480px;
+            width: 100%;
+                background: linear-gradient(160deg, #102b4a 0%, #071321 58%, #123f56 100%);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container.croqui-expanded {
+            width: calc(100vw - 20px);
+            max-width: none;
+            min-height: calc(100vh - 20px);
+            padding: 18px;
+            border-radius: 10px;
+            box-shadow: 0 8px 30px rgba(7, 19, 33, 0.28);
+        }
+
+        /* Header Estilizado */
+        .app-header {
+            text-align: center;
+            margin: -20px -20px 22px;
+            padding: 26px 20px 22px;
+            background: linear-gradient(135deg, #075ca8, #123c72);
+            border-radius: var(--radius) var(--radius) 24px 24px;
+            color: white;
+        }
+
+        .app-header h1 {
+            font-size: 1.65rem;
+            color: white;
+            margin: 0;
+            font-weight: 800;
+            letter-spacing: 0;
+        }
+
+        .app-header p {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.82);
+            margin: 7px 0 0;
+        }
+
+        .app-header::after {
+            content: 'Versão 14092026';
+            display: inline-block;
+            margin-top: 12px;
+            padding: 5px 10px;
+            border: 1px solid rgba(255,255,255,0.35);
+            border-radius: 999px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* Menu Inicial Moderno */
+        .menu-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .menu-card {
+            background: var(--white);
+            border: 1px solid #e3eaf2;
+            padding: 16px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 7px 16px rgba(22, 47, 78, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-card::before {
+            content: '';
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 5px;
+        }
+
+        .menu-card.dgoi::before { background: #1976d2; }
+        .menu-card.hpna::before { background: #8e44ad; }
+        .menu-card.fusion::before { background: #2e9d58; }
+        .menu-card.croqui::before { background: #d97706; }
+
+        .menu-card:active { transform: scale(0.98); background: #f8fbff; }
+
+        .menu-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .menu-card.dgoi .menu-icon { background: #e3f2fd; color: #1976d2; }
+        .menu-card.hpna .menu-icon { background: #f3e5f5; color: var(--vivo-purple); }
+        .menu-card.fusion .menu-icon { background: #e8f5e8; color: #2e7d32; }
+        .menu-card.croqui .menu-icon { background: #fff3e0; color: #d97706; }
+        .menu-card.videos::before { background: #e62117; }
+        .menu-card.videos .menu-icon { background: #ffebee; }
+
+        .menu-info h3 { margin: 0; font-size: 1.08rem; color: #18324d; }
+        .menu-info p { margin: 5px 0 0; font-size: 0.8rem; color: #657789; }
+
+        .video-filter { margin-bottom: 16px; }
+        .video-list { display: grid; gap: 12px; }
+        .video-card {
+            padding: 15px;
+            border: 1px solid #e3eaf2;
+            border-radius: 14px;
+            background: #ffffff;
+            box-shadow: 0 7px 16px rgba(22, 47, 78, 0.06);
+        }
+        .video-thumbnail-link {
+            display: block;
+            position: relative;
+            margin: -15px -15px 12px;
+            overflow: hidden;
+            aspect-ratio: 16 / 9;
+            border-radius: 14px 14px 0 0;
+            background: #152235;
+        }
+        .video-thumbnail {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .video-thumbnail-play {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 52px;
+            height: 36px;
+            border-radius: 11px;
+            background: #e62117;
+            color: #ffffff;
+            display: grid;
+            place-items: center;
+            font-size: 1.25rem;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.28);
+        }
+        .video-thumbnail-link:active .video-thumbnail-play { transform: translate(-50%, -50%) scale(0.94); }
+        .video-card-category {
+            display: inline-block;
+            margin-bottom: 8px;
+            padding: 4px 9px;
+            border-radius: 999px;
+            background: #e8f0fe;
+            color: #24558a;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+        .video-card h3 { margin: 0 0 12px; color: #18324d; font-size: 1rem; }
+        .video-watch-btn {
+            min-height: 40px;
+            padding: 0 13px;
+            border: 0;
+            border-radius: 10px;
+            background: #e62117;
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .video-watch-btn:active { transform: scale(0.98); }
+        .video-empty { color: #d7e5f0; font-size: 0.88rem; }
+
+        /* Estilos de Passos e Telas */
+        .step { display: none; animation: fadeIn 0.4s ease; }
+        .step.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 11px;
+            border-bottom: 1px solid #e4ebf2;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .page-back-btn {
+            min-width: 96px;
+            height: 36px;
+            padding: 0 14px;
+            border: 1px solid rgba(255,255,255,0.22);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.08);
+            color: #ffffff;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+        }
+
+        .page-back-btn:active { transform: scale(0.98); }
+
+        /* Inputs Profissionais */
+        .input-group { margin-bottom: 12px; }
+        .input-group label { display: block; font-size: 0.78rem; font-weight: 700; color: #d7e5f0; margin-bottom: 6px; }
+        .calc-card .input-group label,
+        .dgoi-card .input-group label { color: #52677c; }
+        
+        .input-wrapper { position: relative; }
+        .input-wrapper input, .input-wrapper select {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #d9e3ec;
+            border-radius: 11px;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            background: #f8fafc;
+            appearance: none;
+        }
+
+        .input-wrapper input:focus, .input-wrapper select:focus { outline: none; border-color: #1976d2; background: #fff; box-shadow: 0 0 0 3px rgba(25,118,210,0.12); }
+
+        .global-color-select {
+            font-weight: 800;
+            border: 1px solid rgba(17, 24, 39, 0.12);
+        }
+
+        .color-picker-wrapper {
+            position: relative;
+        }
+
+        .color-choice-trigger {
+            width: 100%;
+            min-height: 46px;
+            padding: 12px 13px;
+            border-radius: 11px;
+            border: 1px solid rgba(17, 24, 39, 0.12);
+            background: #f8fafc;
+            color: #52677c;
+            text-align: left;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .color-picker-popover {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: min(88vw, 360px);
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 20px;
+            box-shadow: 0 22px 60px rgba(15, 23, 42, 0.24);
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            padding: 14px 14px 12px;
+            z-index: 3000;
+            display: none;
+        }
+
+        .color-picker-popover.open {
+            display: block;
+        }
+
+        .color-picker-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 0 0 12px;
+            padding: 2px 4px 10px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #1f2937;
+            font-weight: 800;
+            font-size: 1rem;
+        }
+
+        .color-picker-close {
+            border: none;
+            background: transparent;
+            color: #475569;
+            font-size: 1.6rem;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0 2px;
+        }
+
+        .color-picker-list {
+            display: grid;
+            gap: 8px;
+            max-height: 58vh;
+            overflow-y: auto;
+        }
+
+        .color-option-row {
+            width: 100%;
+            border: 1px solid rgba(15, 23, 42, 0.12);
+            border-radius: 12px;
+            padding: 12px 14px;
+            text-align: left;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
+        }
+
+        .color-option-row:active {
+            transform: scale(0.99);
+        }
+
+        .color-option-row.selected {
+            box-shadow: inset 0 0 0 3px rgba(15, 23, 42, 0.24);
+        }
+
+        .error-msg {
+            color: #ffffff;
+            font-size: 0.8rem;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        /* Botões Premium */
+        .btn {
+            width: 100%;
+            padding: 13px 12px;
+            border: none;
+            border-radius: 11px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .btn-primary { background: linear-gradient(135deg, #075ca8, #123c72); color: white; box-shadow: 0 7px 15px rgba(7, 92, 168, 0.22); }
+        .btn-secondary { background: #edf2f7; color: #27435d; border: 1px solid #dce6ef; }
+        .btn:active { transform: scale(0.98); opacity: 0.9; }
+
+        /* HPNA Calculator Cards */
+        .calc-card {
+            background: #fcfcfc;
+            border: 1px solid #f1f2f6;
+            padding: 10px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .hpna-result-display {
+            background: linear-gradient(135deg, var(--vivo-purple), #8e44ad);
+            color: white;
+            padding: 18px 14px;
+            border-radius: 18px;
+            text-align: center;
+            margin: 18px 0 12px;
+            box-shadow: 0 14px 26px rgba(102, 0, 153, 0.18);
+        }
+
+        .hpna-result-display span {
+            font-size: 0.82rem;
+            opacity: 0.92;
+            display: block;
+            margin-bottom: 8px;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .hpna-result-display h2 {
+            font-size: 2rem;
+            margin: 0;
+            font-weight: 900;
+            letter-spacing: 0.4px;
+        }
+
+        #hpnaStep .calc-card {
+            background: linear-gradient(180deg, #ffffff 0%, #f9f2ff 100%);
+            border: 1px solid rgba(102, 0, 153, 0.12);
+            border-left: 5px solid var(--vivo-purple);
+            box-shadow: 0 8px 18px rgba(102, 0, 153, 0.06);
+        }
+
+        #hpnaStep .input-group label {
+            color: #5e2d7a;
+        }
+
+        .croqui-intro {
+            color: #d7e5f0;
+            font-size: 0.86rem;
+            line-height: 1.45;
+            margin: 0 0 16px;
+        }
+
+        .croqui-card {
+            background: #fff;
+            border: 1px solid #e3eaf2;
+            border-left: 5px solid #d97706;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 5px 14px rgba(22, 47, 78, 0.06);
+        }
+
+        #croquiStep > .croqui-card,
+        #croquiStep #croquiResult > .croqui-card {
+            width: 100%;
+            max-width: none;
+        }
+
+        .croqui-card h4 {
+            color: #9a5300;
+            margin: 0 0 10px;
+            font-size: 0.95rem;
+        }
+
+        .croqui-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .croqui-grid .input-group { margin-bottom: 0; }
+
+        .croqui-house {
+            position: relative;
+            min-height: 680px;
+            height: calc(100vh - 190px);
+            margin: 16px 0;
+            padding: 54px 10px 12px;
+            border: 3px solid #c08457;
+            border-radius: 12px;
+            background: #fffaf2;
+            overflow: auto;
+            cursor: grab;
+            touch-action: none;
+            overscroll-behavior: contain;
+        }
+
+        .croqui-house.dragging {
+            cursor: grabbing;
+            user-select: none;
+        }
+
+        .croqui-canvas {
+            min-width: 1280px;
+            min-height: 1000px;
+            padding: 24px 28px 50px;
+        }
+
+        .croqui-flow {
+            width: max-content;
+            min-width: 520px;
+            padding: 18px 30px 60px;
+            color: #243b53;
+        }
+
+        .croqui-column-layout {
+            display: grid;
+            grid-template-columns: 220px 760px;
+            column-gap: 34px;
+            align-items: start;
+            width: max-content;
+            min-width: 1014px;
+            padding: 18px 30px 60px;
+        }
+
+        .croqui-left-column,
+        .croqui-right-column {
+            display: grid;
+            gap: 18px;
+            align-items: start;
+        }
+
+        .croqui-left-row,
+        .croqui-right-row {
+            min-height: 128px;
+            display: flex;
+            align-items: center;
+        }
+
+        .croqui-left-row {
+            justify-content: center;
+            position: relative;
+        }
+
+        .croqui-left-branch-line {
+            width: 4px;
+            height: 100%;
+            min-height: 82px;
+            background: #263b52;
+        }
+
+        .croqui-left-row:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 100%;
+            width: 4px;
+            height: 64px;
+            background: #263b52;
+            transform: translateX(-50%);
+        }
+
+        .croqui-right-row {
+            gap: 0;
+            position: relative;
+            align-items: flex-start;
+        }
+
+        .croqui-right-row .croqui-point-target {
+            position: relative;
+            min-width: 260px;
+            margin-top: 0;
+        }
+
+        .croqui-right-row .croqui-point-target::before {
+            content: attr(data-cable);
+            position: absolute;
+            right: 100%;
+            top: 50%;
+            width: 308px;
+            height: 4px;
+            padding-right: 8px;
+            background: #263b52;
+            color: #4b5563;
+            font-size: 0.7rem;
+            font-weight: 800;
+            line-height: 1px;
+            text-align: center;
+            white-space: nowrap;
+            transform: translateY(-50%);
+        }
+
+        .croqui-column-label {
+            color: #4b5563;
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.35px;
+        }
+
+        .croqui-step-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 130px;
+            min-height: 46px;
+            padding: 8px 14px;
+            border: 2px solid #263b52;
+            border-radius: 7px;
+            background: #ffffff;
+            color: #263b52;
+            font-size: 0.82rem;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .croqui-step-box.modem { border-color: #7b1fa2; color: #5b1679; background: #f7edff; }
+        .croqui-step-box.divisor { min-width: 116px; min-height: 76px; border-color: #1976d2; color: #14538b; background: #edf7ff; flex-direction: column; gap: 3px; }
+        .croqui-step-box.divisor img { width: 48px; height: 44px; object-fit: contain; }
+        .croqui-step-box.stb { border-color: #2e7d32; color: #216126; background: #eef9ef; }
+
+        .croqui-step-box.stb .stb-total {
+            display: block;
+            margin-top: 4px;
+            color: #4b5563;
+            font-size: 0.68rem;
+            line-height: 1.35;
+            font-weight: 800;
+        }
+
+        .croqui-step-box.stb small {
+            display: block;
+            margin-top: 3px;
+            font-size: 0.64rem;
+            line-height: 1.3;
+        }
+
+        .croqui-vertical-link {
+            position: relative;
+            width: 4px;
+            height: 74px;
+            margin-left: 64px;
+            background: #263b52;
+        }
+
+        .croqui-horizontal-link {
+            position: relative;
+            width: 150px;
+            height: 4px;
+            flex: 0 0 150px;
+            background: #263b52;
+            margin-top: 44px;
+        }
+
+        .croqui-cable-label {
+            position: absolute;
+            z-index: 2;
+            padding: 2px 5px;
+            background: #fffaf2;
+            color: #263b52;
+            font-size: 0.7rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .croqui-vertical-link .croqui-cable-label { left: 10px; top: 28px; }
+        .croqui-horizontal-link .croqui-cable-label { left: 50%; top: -22px; transform: translateX(-50%); }
+
+        .croqui-connector-dot {
+            display: none;
+        }
+
+        .croqui-unused-x {
+            width: 34px;
+            height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #b42318;
+            border-radius: 50%;
+            background: #fff1f0;
+            color: #b42318;
+            font-size: 1.45rem;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .croqui-vertical-link .croqui-connector-dot:first-child { left: -4px; top: -4px; }
+        .croqui-vertical-link .croqui-connector-dot:last-child { left: -4px; bottom: -4px; }
+        .croqui-horizontal-link .croqui-connector-dot:first-child { left: -4px; top: -4px; }
+        .croqui-horizontal-link .croqui-connector-dot:last-child { right: -4px; top: -4px; }
+
+        .croqui-branch-list {
+            display: grid;
+            gap: 18px;
+            margin-left: 30px;
+            padding: 4px 0 24px 30px;
+            border-left: 3px solid #263b52;
+        }
+
+        .croqui-branch-row {
+            display: flex;
+            align-items: center;
+            min-height: 78px;
+            position: relative;
+            margin-left: -30px;
+            padding-left: 0;
+        }
+
+        .croqui-branch-target {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .croqui-point-target {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+        }
+
+        .croqui-point-name {
+            color: #263b52;
+            font-size: 0.78rem;
+            font-weight: 900;
+            line-height: 1.15;
+        }
+
+        .croqui-point-info {
+            color: #4b5563;
+            font-size: 0.68rem;
+            font-weight: 700;
+            line-height: 1.25;
+        }
+
+        .croqui-branch-row > .croqui-horizontal-link {
+            margin-left: 0;
+        }
+
+        .croqui-nested-branches {
+            display: grid;
+            gap: 14px;
+            margin-left: 18px;
+            padding-left: 20px;
+            border-left: 3px solid #263b52;
+        }
+
+        .croqui-downstream-divider {
+            margin: 4px 0 12px 150px;
+            padding: 12px 0 0 24px;
+            border-left: 3px solid #263b52;
+        }
+
+        /* Croqui v2: every source card sits above its output spine. */
+        .croqui-clean {
+            width: max-content;
+            min-width: 1120px;
+            padding: 26px 42px 70px;
+        }
+
+        .croqui-clean-stage {
+            width: 1020px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0;
+        }
+
+        .croqui-clean-source {
+            width: 220px;
+            min-height: 86px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .croqui-clean-stem {
+            display: none;
+        }
+
+        .croqui-clean-vertical-link {
+            position: relative;
+            width: 4px;
+            height: 64px;
+            margin-left: 108px;
+            background: #263b52;
+        }
+
+        .croqui-clean-vertical-link span {
+            position: absolute;
+            left: 12px;
+            top: 25px;
+            padding: 2px 6px;
+            background: #fffaf2;
+            color: #4b5563;
+            font-size: 0.72rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .croqui-clean-divider-stage {
+            display: flex;
+            align-items: flex-start;
+            gap: 0;
+            margin-bottom: 20px;
+        }
+
+        .croqui-clean-divider-stage > .croqui-clean-source {
+            flex: 0 0 220px;
+        }
+
+        .croqui-clean-divider-stage > .croqui-clean-outputs {
+            flex: 0 0 820px;
+            margin-left: 0;
+        }
+
+        .croqui-clean-outputs {
+            position: relative;
+            display: grid;
+            gap: 26px;
+            margin-left: 0;
+            padding: 8px 0 18px 0;
+        }
+
+        .croqui-clean-outputs::before {
+            display: none;
+        }
+
+        .croqui-clean-branch {
+            min-height: 92px;
+            display: flex;
+            align-items: center;
+            padding-left: 0;
+        }
+
+        .croqui-clean-branch::before {
+            content: '';
+            width: 58px;
+            height: 4px;
+            flex: 0 0 58px;
+            background: #263b52;
+        }
+
+        .croqui-clean-line {
+            position: relative;
+            width: 330px;
+            height: 4px;
+            flex: 0 0 330px;
+            background: #263b52;
+        }
+
+        .croqui-clean-line span {
+            position: absolute;
+            left: 50%;
+            top: -25px;
+            transform: translateX(-50%);
+            padding: 2px 7px;
+            background: #fffaf2;
+            color: #4b5563;
+            font-size: 0.72rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .croqui-clean-target {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .croqui-clean-point-name {
+            color: #263b52;
+            font-size: 0.8rem;
+            font-weight: 900;
+        }
+
+        .croqui-clean-point-card {
+            min-width: 230px;
+            padding: 10px 15px;
+            border: 2px solid #2e7d32;
+            border-radius: 7px;
+            background: #eef9ef;
+            color: #216126;
+            font-size: 0.82rem;
+            font-weight: 900;
+            text-align: center;
+        }
+
+        .croqui-clean-point-card small {
+            display: block;
+            margin-top: 4px;
+            color: #4b5563;
+            font-size: 0.7rem;
+            line-height: 1.35;
+        }
+
+        .croqui-clean-nested {
+            width: max-content;
+            margin: 12px 0 0 0;
+        }
+
+        .croqui-clean-divider-target {
+            display: flex;
+            align-items: flex-start;
+            gap: 0;
+        }
+
+        .croqui-clean-downstream {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin: 18px 0 12px 108px;
+        }
+
+        .croqui-clean-downstream-link {
+            position: relative;
+            width: 4px;
+            height: 68px;
+            margin-left: 0;
+            background: #263b52;
+        }
+
+        .croqui-clean-downstream-link span {
+            position: absolute;
+            left: 12px;
+            top: 28px;
+            padding: 2px 6px;
+            background: #fffaf2;
+            color: #4b5563;
+            font-size: 0.72rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .croqui-clean-downstream-stage {
+            display: flex;
+            align-items: flex-start;
+            gap: 0;
+        }
+
+        .croqui-clean-unused {
+            min-width: 230px;
+            color: #b42318;
+            font-size: 0.8rem;
+            font-weight: 900;
+        }
+
+        .croqui-sketch {
+            width: max-content;
+            min-width: 760px;
+            min-height: 900px;
+            padding: 28px 42px 70px;
+            background: #111315;
+            color: #f1f3f4;
+            font-family: "Courier New", monospace;
+            font-weight: 700;
+            letter-spacing: 0;
+            transform-origin: top left;
+        }
+
+        .croqui-sketch-node {
+            display: inline-block;
+            padding: 5px 10px;
+            border: 2px solid currentColor;
+            color: #f1f3f4;
+            font-size: 1rem;
+            line-height: 1.15;
+            white-space: nowrap;
+        }
+
+        .croqui-sketch-center {
+            width: 100%;
+            text-align: center;
+        }
+
+        .croqui-sketch-vertical {
+            width: 2px;
+            height: 34px;
+            margin: 0 auto;
+            background: #d8dde1;
+        }
+
+        .croqui-sketch-distance {
+            color: #d8dde1;
+            font-size: 0.92rem;
+            line-height: 1.4;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .croqui-sketch-first-branches {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(190px, 1fr));
+            gap: 18px;
+            margin-top: 2px;
+            align-items: start;
+            width: 420px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .croqui-sketch-first-branches.count-4 {
+            grid-template-columns: repeat(4, 180px);
+            width: 756px;
+            gap: 12px;
+        }
+
+        .croqui-sketch-first-branches.count-2 {
+            grid-template-columns: repeat(2, 190px);
+            width: 398px;
+            gap: 18px;
+        }
+
+        .croqui-sketch-output-stem {
+            width: 2px;
+            height: 28px;
+            margin: 0 auto;
+            background: #d8dde1;
+        }
+
+        .croqui-sketch-junction {
+            position: relative;
+            width: 2px;
+            height: 18px;
+            margin: 0 auto;
+            background: #d8dde1;
+        }
+
+        .croqui-sketch-branch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 190px;
+            min-height: 150px;
+            position: relative;
+        }
+
+        .croqui-sketch-diagonal {
+            width: 150px;
+            height: 34px;
+            position: relative;
+        }
+
+        .croqui-sketch-diagonal::before {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 2px;
+            top: 16px;
+            left: 0;
+            background: #d8dde1;
+            transform-origin: center;
+        }
+
+        .croqui-sketch-diagonal.left::before { transform: rotate(30deg); }
+        .croqui-sketch-diagonal.right::before { transform: rotate(-30deg); }
+        .croqui-sketch-diagonal.center::before { transform: rotate(0deg); }
+        .croqui-sketch-diagonal.left-far::before { transform: rotate(42deg); }
+        .croqui-sketch-diagonal.right-far::before { transform: rotate(-42deg); }
+
+        .croqui-sketch-branch .croqui-sketch-distance { margin-top: 3px; }
+
+        .croqui-sketch-downstream {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 50%;
+            margin-left: 50%;
+            margin-top: -4px;
+        }
+
+        .croqui-sketch-downstream .croqui-sketch-vertical { height: 42px; }
+
+        .croqui-sketch-downstream-branches {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            width: 100%;
+        }
+
+        .croqui-sketch-downstream-branch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .croqui-sketch-downstream-branch .croqui-sketch-diagonal { width: 120px; }
+        .croqui-sketch-downstream-branch .croqui-sketch-diagonal::before { width: 120px; }
+
+        .croqui-sketch-point-name {
+            margin-top: 4px;
+            color: #f1f3f4;
+            font-size: 0.95rem;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .croqui-branch-row .croqui-connector-dot { margin-left: -37px; margin-right: 24px; }
+
+        .croqui-house-label {
+            position: absolute;
+            top: 12px;
+            left: 0;
+            width: 100%;
+            min-height: 42px;
+            padding: 12px 18px;
+            color: #ffffff;
+            background: #123c72;
+            border-bottom: 3px solid #075ca8;
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            cursor: grab;
+            box-shadow: 0 3px 10px rgba(7, 19, 33, 0.22);
+        }
+
+        .croqui-drag-strip {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 12px;
+            background: #071f3d;
+            cursor: grab;
+            z-index: 4;
+        }
+
+        .croqui-house-label:active {
+            cursor: grabbing;
+        }
+
+        .croqui-view-button {
+            margin-top: 12px;
+            background: linear-gradient(135deg, #d97706, #9a5300);
+            color: #ffffff;
+        }
+
+        .croqui-fullscreen {
+            position: fixed;
+            inset: 0;
+            z-index: 5000;
+            display: none;
+            background: #fffaf2;
+        }
+
+        .croqui-fullscreen.open { display: block; }
+
+        .croqui-fullscreen-toolbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 2;
+            min-height: 52px;
+            padding: 9px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            background: rgba(255, 250, 242, 0.94);
+            border-bottom: 1px solid #d6b28f;
+            box-shadow: 0 3px 12px rgba(124, 68, 31, 0.12);
+        }
+
+        .croqui-fullscreen-toolbar strong {
+            color: #7c441f;
+            font-size: 0.9rem;
+        }
+
+        .croqui-close-button {
+            width: 38px;
+            height: 34px;
+            border: 1px solid #c08457;
+            border-radius: 9px;
+            background: #ffffff;
+            color: #7c441f;
+            font-size: 1.25rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .croqui-fullscreen .croqui-house {
+            width: 100vw;
+            height: 100vh;
+            min-height: 100vh;
+            margin: 0;
+            padding: 12px 12px 36px;
+            border: 0;
+            border-radius: 0;
+        }
+
+        .croqui-fullscreen .croqui-canvas {
+            min-width: 900px;
+            min-height: 780px;
+            padding: 34px 44px 80px;
+        }
+
+        .croqui-node-grid {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .croqui-node {
+            min-height: 64px;
+            padding: 9px;
+            border: 2px solid #d97706;
+            border-radius: 10px;
+            background: #fff;
+            color: #633b14;
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+        }
+
+        .croqui-node.divisor {
+            min-width: 130px;
+            min-height: 92px;
+            padding: 6px;
+        }
+
+        .croqui-node.divisor img {
+            width: 54px;
+            height: 54px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .croqui-node.modem { grid-column: 1 / -1; border-color: #7b1fa2; color: #5b1679; background: #f7edff; }
+        .croqui-node.divisor { border-color: #1976d2; color: #14538b; background: #edf7ff; }
+        .croqui-node.stb { border-color: #2e7d32; color: #216126; background: #eef9ef; }
+
+        .croqui-node small { font-size: 0.66rem; font-weight: 600; }
+
+        .croqui-branch {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 14px 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .croqui-branch .croqui-node {
+            flex: 0 0 82px;
+            min-height: 58px;
+            font-size: 0.65rem;
+        }
+
+        .croqui-wire {
+            min-width: 90px;
+            height: 6px;
+            flex: 1;
+            background: #b45309;
+            position: relative;
+            border-radius: 99px;
+            box-shadow: 0 1px 0 rgba(255,255,255,0.65);
+        }
+
+        .croqui-wire span {
+            position: absolute;
+            left: 50%;
+            top: -18px;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            color: #7c441f;
+            font-size: 0.58rem;
+            font-weight: 800;
+            background: #fffaf2;
+            padding: 2px 5px;
+            border-radius: 5px;
+        }
+
+        .croqui-links {
+            display: grid;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .croqui-link-summary {
+            padding: 9px 10px;
+            border-radius: 9px;
+            background: #f7f9fc;
+            border: 1px solid #e4ebf2;
+            color: #52677c;
+            font-size: 0.75rem;
+            line-height: 1.35;
+        }
+
+        .croqui-dialog-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 4000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(7, 19, 33, 0.58);
+            backdrop-filter: blur(4px);
+        }
+
+        .croqui-dialog-backdrop.open { display: flex; }
+
+        .croqui-dialog-backdrop.keyboard-open {
+            align-items: flex-start;
+            padding-top: max(12px, env(safe-area-inset-top));
+            padding-bottom: 12px;
+        }
+
+        .croqui-dialog-backdrop.keyboard-open .croqui-dialog {
+            align-self: flex-start;
+            margin-top: 0;
+            transform: translateY(0);
+        }
+
+        .croqui-dialog {
+            width: min(100%, 430px);
+            max-height: calc(100dvh - 24px);
+            overflow-y: auto;
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 24px 70px rgba(7, 19, 33, 0.3);
+        }
+
+        .croqui-dialog h3 {
+            margin: 0 0 7px;
+            color: #263b52;
+            font-size: 1.12rem;
+        }
+
+        .croqui-dialog p {
+            margin: 0 0 16px;
+            color: #617286;
+            font-size: 0.84rem;
+            line-height: 1.4;
+        }
+
+        .croqui-dialog-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .croqui-dialog-actions .btn { margin-top: 0; }
+
+        .croqui-port-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .croqui-port-card {
+            padding: 11px;
+            border: 1px solid #e3eaf2;
+            border-radius: 11px;
+            background: #f8fafc;
+        }
+
+        .croqui-port-card strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #40566e;
+            font-size: 0.82rem;
+        }
+
+        .croqui-tree {
+            display: grid;
+            gap: 10px;
+        }
+
+        .croqui-tree-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .croqui-tree-branch {
+            margin-left: 18px;
+            padding-left: 12px;
+            border-left: 2px solid #d97706;
+        }
+
+        .croqui-port-label {
+            color: #9a5300;
+            font-size: 0.66rem;
+            font-weight: 800;
+            letter-spacing: 0.2px;
+        }
+
+        .dgoi-result-card {
+            color: #ffffff;
+            padding: 18px 12px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 15px 0;
+            box-shadow: 0 10px 22px rgba(0,0,0,0.18);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.28);
+        }
+
+        .dgoi-result-fiber {
+            margin: 0 0 12px;
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        .dgoi-result-details {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .dgoi-result-anilha {
+            margin-top: 16px;
+            padding: 12px 8px;
+            border: 3px solid rgba(255,255,255,0.9);
+            border-radius: 12px;
+            background: rgba(0,0,0,0.22);
+        }
+
+        .dgoi-result-anilha-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .dgoi-result-anilha-number {
+            display: block;
+            margin-top: 2px;
+            font-size: 3.8rem;
+            line-height: 1;
+            font-weight: 900;
+        }
+
+        /* Modais Modernos */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); }
+        .modal-content { 
+            background: white; 
+            margin: 15vh auto; 
+            padding: 0; 
+            width: 90%; 
+            max-width: 400px; 
+            border-radius: 24px; 
+            overflow: hidden;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .modal-header { background: var(--vivo-purple); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 20px; max-height: 70vh; overflow-y: auto; font-size: 0.9rem; line-height: 1.5; }
+        .modal-body h4 { margin: 15px 0 5px 0; color: var(--primary); border-left: 3px solid var(--primary); padding-left: 8px; }
+        .modal-body ul { padding-left: 20px; margin: 5px 0; }
+        .modal-body li { margin-bottom: 5px; }
+
+        /* Footer */
+        .footer { text-align: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.18); }
+        .footer p { font-size: 0.75rem; color: #b8cbd7; font-weight: 600; letter-spacing: 0.5px; }
+
+        /* DGOIC Specifics */
+        .dgoi-card { 
+            background: #fff; 
+            border: 1px solid #edf2f7; 
+            border-left: 5px solid var(--primary);
+            padding: 12px; 
+            border-radius: 12px; 
+            margin-bottom: 12px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .dgoi-card:nth-child(even) {
+            border-left-color: #3498db;
+            background: #fcfdff;
+        }
+        .dgoi-card h4 {
+            margin: 0 0 10px 0;
+            color: var(--primary);
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        .color-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- TELA INICIAL -->
+    <div id="mainMenu" class="step active">
+        <div class="app-header">
+            <h1>APP TEC RPF</h1>
+            <p>Soluções inteligentes para redes</p>
+        </div>
+
+        <div class="menu-grid">
+            <div class="menu-card dgoi" onclick="startDGOIC()">
+                <div class="menu-icon">
+                    <img src="file:///android_asset/appiconedgoic.jpg" alt="Localizador DGOIC" style="width: 28px; height: 28px; object-fit: contain; display: block;">
+                </div>
+                <div class="menu-info">
+                    <h3>Localizador DGOIC</h3>
+                    <p>Cálculo de fibras e anilhas</p>
+                </div>
+            </div>
+
+            <div class="menu-card hpna" onclick="startHPNA()">
+                <div class="menu-icon">
+                    <img src="file:///android_asset/appcalchpna.png" alt="Calculadora HPNA" style="width: 28px; height: 28px; object-fit: contain; display: block;">
+                </div>
+                <div class="menu-info">
+                    <h3>Calculadora HPNA</h3>
+                    <p>Cálculo de potência e guias técnicos</p>
+                </div>
+            </div>
+
+            <div class="menu-card fusion" onclick="startFusion()">
+                <div class="menu-icon">🔗</div>
+                <div class="menu-info">
+                    <h3>DGOI Fusionado</h3>
+                    <p>Identificador de fibra óptica fusionada</p>
+                </div>
+            </div>
+
+            <div class="menu-card croqui" onclick="startCroqui()">
+                <div class="menu-icon">🏠</div>
+                <div class="menu-info">
+                    <h3>Croqui HPNA</h3>
+                    <p>Desenho da rede por ambientes</p>
+                </div>
+            </div>
+
+            <div class="menu-card videos" onclick="startVideos()">
+                <div class="menu-icon" aria-hidden="true">
+                    <svg viewBox="0 0 28 20" width="34" height="24">
+                        <path fill="#e62117" d="M27.4 3.1a3.5 3.5 0 0 0-2.5-2.5C22.7 0 14 0 14 0S5.3 0 3.1.6A3.5 3.5 0 0 0 .6 3.1 36 36 0 0 0 0 10a36 36 0 0 0 .6 6.9 3.5 3.5 0 0 0 2.5 2.5C5.3 20 14 20 14 20s8.7 0 10.9-.6a3.5 3.5 0 0 0 2.5-2.5A36 36 0 0 0 28 10a36 36 0 0 0-.6-6.9Z"/>
+                        <path fill="#fff" d="m11.2 14.3 7.2-4.3-7.2-4.3v8.6Z"/>
+                    </svg>
+                </div>
+                <div class="menu-info">
+                    <h3>Vídeos importantes</h3>
+                    <p>Orientações em vídeo por categoria</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;">
+            <button class="btn btn-secondary" onclick="openModal('modalHPNA')" style="font-size: 0.8rem;">📊 Info HPNA</button>
+            <button class="btn btn-secondary" onclick="openModal('modalIPTV')" style="font-size: 0.8rem;">📺 Info IPTV</button>
+        </div>
+    </div>
+
+    <div id="videosStep" class="step">
+        <div class="section-header">
+            <div class="section-title">
+                <svg viewBox="0 0 28 20" width="28" height="20" aria-hidden="true">
+                    <path fill="#ff4d4d" d="M27.4 3.1a3.5 3.5 0 0 0-2.5-2.5C22.7 0 14 0 14 0S5.3 0 3.1.6A3.5 3.5 0 0 0 .6 3.1 36 36 0 0 0 0 10a36 36 0 0 0 .6 6.9 3.5 3.5 0 0 0 2.5 2.5C5.3 20 14 20 14 20s8.7 0 10.9-.6a3.5 3.5 0 0 0 2.5-2.5A36 36 0 0 0 28 10a36 36 0 0 0-.6-6.9Z"/>
+                    <path fill="#fff" d="m11.2 14.3 7.2-4.3-7.2-4.3v8.6Z"/>
+                </svg>
+                <span>Vídeos importantes</span>
+            </div>
+            <button class="page-back-btn" onclick="goBack()" type="button">Voltar</button>
+        </div>
+        <div class="input-group video-filter">
+            <label for="videoCategoryFilter">Filtrar por categoria</label>
+            <div class="input-wrapper">
+                <select id="videoCategoryFilter" onchange="renderVideos()">
+                    <option value="all">Todas as categorias</option>
+                </select>
+            </div>
+        </div>
+        <div id="videoList" class="video-list"></div>
+    </div>
+
+    <!-- SEÇÃO DGOIC -->
+    <div id="dgoiStep1" class="step">
+        <div class="section-header">
+            <div class="section-title">
+                <img src="file:///android_asset/appiconedgoic.jpg" alt="Localizador DGOIC" style="width: 20px; height: 20px; object-fit: contain; display: block;">
+                <span>Localizador DGOIC</span>
+            </div>
+            <button class="page-back-btn" onclick="goBack()" type="button">Voltar</button>
+        </div>
+        <div class="input-group">
+            <label>Quantidade de SP (Primárias)</label>
+            <div class="input-wrapper">
+                <input type="number" id="numSP" placeholder="" min="1" max="12">
+            </div>
+        </div>
+        <button class="btn btn-primary" onclick="goToDGOICStep2()">Próximo Passo</button>
+        <button class="btn btn-secondary" onclick="showMainMenu()">Voltar ao Menu</button>
+    </div>
+
+    <div id="dgoiStep2" class="step">
+        <div class="section-header">
+            <div class="section-title"><span>⚙️</span> Configurar SPs</div>
+            <button class="page-back-btn" onclick="goBack()" type="button">Voltar</button>
+        </div>
+        <div id="spInputs"></div>
+        <div id="sp-error-dupe" class="error-msg" style="margin-bottom: 10px;">Números de SP repetidos!</div>
+        <button class="btn btn-primary" onclick="goToDGOICStep3()">Próximo Passo</button>
+        <button class="btn btn-secondary" onclick="startDGOIC()">Reiniciar</button>
+    </div>
+
+    <div id="dgoiStep3" class="step">
+        <div class="section-header">
+            <div class="section-title"><span>🎨</span> Cores dos SS</div>
+            <button class="page-back-btn" onclick="goBack()" type="button">Voltar</button>
+        </div>
+        <div id="colorInputs"></div>
+        <button class="btn btn-primary" onclick="goToDGOICStep4()">Finalizar Configuração</button>
+        <button class="btn btn-secondary" onclick="startDGOIC()">Reiniciar</button>
+    </div>
+
+    <div id="dgoiStep4" class="step">
+        <div class="section-header">
+            <div class="section-title"><span>📍</span> Localizar Fibra</div>
+            <button class="page-back-btn" onclick="goBack()" type="button">Voltar</button>
+        </div>
+        <div class="input-group">
+            <label>Selecione o SP</label>
+            <div class="input-wrapper">
+                <select id="targetSPSelect"></select>
+            </div>
+        </div>
+        <div class="input-group">
+            <label>Número da Fibra</label>
+            <div class="input-wrapper">
+                <input type="number" id="targetFiber" placeholder="">
+            </div>
+        </div>
+        <div id="error4" class="error-msg" style="margin-bottom: 10px;">Verificar as informações ou solicitar manobra fibra não localizada para esta distribuição</div>
+        <button class="btn btn-primary" onclick="calculateDGOIC()">Calcular Localização</button>
+        <button class="btn btn-secondary" onclick="startDGOIC()">Reiniciar</button>
+    </div>
+
+    <div id="dgoiResult" class="step">
+        <div id="dgoiResultCard" class="dgoi-result-card" style="background: #1976d2;">
+            <span>LOCALIZAÇÃO DA FIBRA</span>
+            <div id="resultContent"></div>
+        </div>
+        <button class="btn btn-primary" onclick="showStep('dgoiStep4')">Nova Consulta</button>
+        <button class="btn btn-secondary" onclick="showMainMenu()">Menu Inicial</button>
+    </div>
+
+    <!-- SEÇÃO HPNA -->
+    <div id="hpnaStep" class="step">
+        <div class="section-header">
+            <div class="section-title">
+                <img src="file:///android_asset/appcalchpna.png" alt="Calculadora HPNA" style="width: 20px; height: 20px; object-fit: contain; display: block;">
+                <span>Calculadora HPNA</span>
+            </div>
+            <button class="page-back-btn" onclick="goBack()" type="button">Voltar</button>
+        </div>
+        
+        <div class="calc-card">
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>Divisores 1x2 Vivo</label>
+                <div class="input-wrapper">
+                    <input type="number" id="div1x2" value="0" oninput="calculateHPNA()">
+                </div>
+            </div>
+        </div>
+
+        <div class="calc-card">
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>Divisores 1x4 Vivo</label>
+                <div class="input-wrapper">
+                    <input type="number" id="div1x4" value="0" oninput="calculateHPNA()">
+                </div>
+            </div>
+        </div>
+
+        <div class="calc-card">
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>Quantidade de Conectores</label>
+                <div class="input-wrapper">
+                    <input type="number" id="conectorCount" value="0" oninput="calculateHPNA()">
+                </div>
+            </div>
+        </div>
+
+        <div class="calc-card">
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>Metragem de Cabo Coaxial</label>
+                <div class="input-wrapper">
+                    <input type="number" id="coaxialMeters" value="0" oninput="calculateHPNA()">
+                </div>
+            </div>
+        </div>
+
+        <div class="hpna-result-display">
+            <span>Potência total estimada</span>
+            <h2 id="hpnaResultVal">0.00 dBm</h2>
+        </div>
+
+        <button class="btn btn-secondary" onclick="showMainMenu()">Voltar ao Menu Inicial</button>
+    </div>
+
+    <!-- CROQUI HPNA -->
+    <div id="croquiStep" class="step">
+        <div class="section-header">
+            <div class="section-title"><span>🏠</span> Croqui HPNA</div>
+            <button class="page-back-btn" onclick="goBack()" type="button">Voltar</button>
+        </div>
+        <p class="croqui-intro">Monte a rede seguindo o trajeto real: informe cada cabo, divisor e ponta até chegar aos STBs.</p>
+        <button id="croquiStartButton" class="btn btn-primary" onclick="startCroquiSetup()">Iniciar</button>
+        <div id="croquiProgress" class="croqui-card" style="display:none;"></div>
+        <div id="croquiResult" style="display: none;">
+            <div class="croqui-card">
+                <h4>Croqui da casa</h4>
+                <p class="croqui-intro" style="color: #52677c;">O croqui fica disponível em tela inteira para facilitar a visualização no celular deitado.</p>
+                <button class="btn croqui-view-button" onclick="openCroquiFullscreen()">Exibir croqui</button>
+                <div id="croquiLosses" class="croqui-links"></div>
+            </div>
+            <button class="btn btn-secondary" onclick="startCroqui()">Novo croqui</button>
+        </div>
+    </div>
+
+    <!-- SEÇÃO DGOI FUSIONADO -->
+    <div id="fusionStep1" class="step">
+        <div class="section-header">
+            <div class="section-title" style="color: #2e7d32;"><span>🔗</span> DGOI Fusionado</div>
+            <button class="page-back-btn" onclick="goBack()" type="button">Voltar</button>
+        </div>
+        
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Quantos SP existem nesta caixa?</label>
+                <div class="input-wrapper">
+                    <input type="number" id="fusionNumSP" placeholder="Ex: 1" min="1">
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="goToFusionStep2()">Próximo Passo</button>
+        <button class="btn btn-secondary" onclick="showMainMenu()">Voltar ao Menu</button>
+    </div>
+
+    <div id="fusionStep2" class="step">
+        <div class="section-header">
+            <div class="section-title" style="color: #2e7d32;"><span>⚙️</span> Configuração do SS</div>
+            <button class="page-back-btn" onclick="goBack()" type="button">Voltar</button>
+        </div>
+        
+        <div class="calc-card">
+            <h4 style="margin: 0 0 15px 0; color: #2e7d32; font-size: 1rem;">SP #<span id="fusionSPNum">1</span></h4>
+            <div class="input-group">
+                <label>Início do SS</label>
+                <div class="input-wrapper">
+                    <input type="number" id="fusionSSStart" placeholder="Ex: 1" min="1">
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Término do SS</label>
+                <div class="input-wrapper">
+                    <input type="number" id="fusionSSEnd" placeholder="Ex: 3" min="1">
+                </div>
+            </div>
+            <div style="background: #e8f5e8; padding: 10px; border-radius: 8px; margin-top: 10px;">
+                <p style="margin: 0; font-size: 0.85rem; color: #2e7d32; font-weight: 600;">
+                    Total de SS: <span id="fusionSSTotal">0</span>
+                </p>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="goToFusionStep3()">Próximo Passo</button>
+        <button class="btn btn-secondary" onclick="startFusion()">Reiniciar</button>
+    </div>
+
+    <div id="fusionStep3" class="step">
+        <div class="section-header">
+            <div class="section-title" style="color: #2e7d32;"><span>📊</span> Distribuição de Fibras</div>
+            <button class="page-back-btn" onclick="goBack()" type="button">Voltar</button>
+        </div>
+        
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Número inicial da distribuição</label>
+                <div class="input-wrapper">
+                    <input type="number" id="fusionFiberStart" placeholder="Ex: 1" min="1">
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Número final da distribuição</label>
+                <div class="input-wrapper">
+                    <input type="number" id="fusionFiberEnd" placeholder="Ex: 24" min="1">
+                </div>
+            </div>
+            <div style="background: #e8f5e8; padding: 10px; border-radius: 8px; margin-top: 10px;">
+                <p style="margin: 0; font-size: 0.85rem; color: #2e7d32; font-weight: 600;">
+                    Total de fibras: <span id="fusionFiberTotal">0</span><br>
+                    Fibras por SS: <span id="fusionFibersPerSS">0</span>
+                </p>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="goToFusionStep4()">Próximo Passo</button>
+        <button class="btn btn-secondary" onclick="startFusion()">Reiniciar</button>
+    </div>
+
+    <div id="fusionStep4" class="step">
+        <div class="section-header">
+            <div class="section-title" style="color: #2e7d32;"><span>🎯</span> Identificar Fibra</div>
+            <button class="page-back-btn" onclick="goBack()" type="button">Voltar</button>
+        </div>
+        
+        <div class="calc-card">
+            <div class="input-group">
+                <label>Qual o número da fibra do cliente?</label>
+                <div class="input-wrapper">
+                    <input type="number" id="fusionTargetFiber" placeholder="Ex: 10" min="1" oninput="calculateFusion()">
+                </div>
+            </div>
+        </div>
+
+        <div class="hpna-result-display" id="fusionResultDisplay" style="background: linear-gradient(135deg, #2e7d32, #66bb6a);">
+            <span>RESULTADO DA IDENTIFICAÇÃO</span>
+            <div id="fusionResult">
+                <h2 style="margin: 10px 0; font-size: 1.5rem;">Aguardando número...</h2>
+            </div>
+        </div>
+
+        <button class="btn btn-secondary" onclick="showMainMenu()">Voltar ao Menu Inicial</button>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>TODOS OS DIREITOS RESERVADOS RAFAELPINHOFIBRA</p>
+    </div>
+</div>
+
+<!-- MODAIS -->
+<div id="croquiFullscreen" class="croqui-fullscreen" aria-hidden="true">
+    <div class="croqui-fullscreen-toolbar">
+        <strong>Croqui HPNA • arraste para visualizar</strong>
+        <button class="croqui-close-button" onclick="closeCroquiFullscreen()" type="button" aria-label="Fechar croqui">×</button>
+    </div>
+    <div id="croquiFullscreenHouse" class="croqui-house"></div>
+</div>
+<div id="croquiDialogBackdrop" class="croqui-dialog-backdrop" aria-hidden="true">
+    <div id="croquiDialog" class="croqui-dialog" role="dialog" aria-modal="true" aria-labelledby="croquiDialogTitle"></div>
+</div>
+<div id="modalHPNA" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span>📊 Padrões Vivo HPNA</span>
+            <span style="cursor:pointer; font-size: 1.5rem;" onclick="closeModal('modalHPNA')">&times;</span>
+        </div>
+        <div class="modal-body">
+            <ul>
+                <li><strong>Divisor 1x2 Vivo:</strong> 8.0 dB</li>
+                <li><strong>Divisor 1x4 Vivo:</strong> 12.0 dB</li>
+                <li><strong>Conector:</strong> 0.15 dB</li>
+                <li><strong>Cabo Coaxial:</strong> 0.06 dB por metro</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div id="modalIPTV" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span>📺 Guia IPTV / HPNA</span>
+            <span style="cursor:pointer; font-size: 1.5rem;" onclick="closeModal('modalIPTV')">&times;</span>
+        </div>
+        <div class="modal-body">
+            <h4>Níveis Recomendados (HPNA)</h4>
+            <ul>
+                <li>1 ponto: -5 dBm</li>
+                <li>2 pontos: -11,5 dBm</li>
+                <li>3 pontos: -19,5 dBm</li>
+                <li>4 pontos: -28 dBm</li>
+                <li>5 pontos: -36,5 dBm</li>
+                <li>6 pontos: -40 dBm</li>
+            </ul>
+
+            <h4>Gravador Virtual</h4>
+            <ul>
+                <li>Contratação via controle remoto.</li>
+                <li>Capacidade: 200 horas em nuvem.</li>
+                <li>Disponibilidade: Mínimo 7 dias.</li>
+                <li>Permite agendar e gravar ao vivo.</li>
+            </ul>
+
+            <h4>Função Replay TV</h4>
+            <ul>
+                <li>Volta até 7 dias na programação.</li>
+                <li>Procure o símbolo de Replay no guia.</li>
+            </ul>
+
+            <h4>Controle de Acesso</h4>
+            <ul>
+                <li>Cadeado indica bloqueio de conteúdo.</li>
+                <li>Bloqueio/Desbloqueio via menu de configurações.</li>
+            </ul>
+
+            <h4>Catálogo de Filmes</h4>
+            <ul>
+                <li><strong>Tarjeta Vermelha:</strong> Contratação mensal.</li>
+                <li><strong>Tarjeta Amarela:</strong> Locação por 48 horas.</li>
+            </ul>
+
+            <h4>Funcionalidades Extras</h4>
+            <ul>
+                <li>Favoritos e lembretes disponíveis.</li>
+                <li>Troca de conta Netflix: Opção "Demover".</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+        // Script para criar atalho automático
+        let deferredPrompt;
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Verificar se já foi instalado
+            if (!localStorage.getItem('appInstalled')) {
+                // Mostrar diálogo personalizado
+                showInstallDialog();
+            }
+        });
+        
+        window.addEventListener('appinstalled', () => {
+            localStorage.setItem('appInstalled', 'true');
+            deferredPrompt = null;
+        });
+        
+        function showInstallDialog() {
+            const dialog = document.createElement('div');
+            dialog.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+            `;
+            
+            dialog.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 15px; max-width: 350px; text-align: center; margin: 20px;">
+                    <div style="font-size: 3rem; margin-bottom: 15px;">📱</div>
+                    <h3 style="margin: 0 0 15px 0; color: #2e7d32;">APP TEC</h3>
+                    <p style="margin: 0 0 20px 0; color: #666; line-height: 1.4;">
+                        Deseja instalar o APP TEC na tela inicial para acesso rápido?
+                    </p>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <button onclick="installApp()" style="background: #2e7d32; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            Instalar
+                        </button>
+                        <button onclick="closeInstallDialog()" style="background: #f5f5f5; color: #666; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer;">
+                            Agora não
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(dialog);
+        }
+        
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('App instalado');
+                    }
+                    deferredPrompt = null;
+                });
+            }
+            closeInstallDialog();
+        }
+        
+        function closeInstallDialog() {
+            const dialog = document.querySelector('div[style*="position: fixed"]');
+            if (dialog) {
+                dialog.remove();
+            }
+        }
+        
+        // Para iOS - adicionar instructions manual
+        if (['iPhone', 'iPad', 'iPod'].includes(navigator.platform)) {
+            setTimeout(() => {
+                if (!localStorage.getItem('appInstalled') && !window.matchMedia('(display-mode: standalone)').matches) {
+                    showIOSInstructions();
+                }
+            }, 3000);
+        }
+        
+        function showIOSInstructions() {
+            const dialog = document.createElement('div');
+            dialog.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+            `;
+            
+            dialog.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 15px; max-width: 350px; text-align: center; margin: 20px;">
+                    <div style="font-size: 3rem; margin-bottom: 15px;">📱</div>
+                    <h3 style="margin: 0 0 15px 0; color: #2e7d32;">APP TEC</h3>
+                    <p style="margin: 0 0 20px 0; color: #666; line-height: 1.4;">
+                        Para adicionar à tela inicial:<br><br>
+                        <strong>iPhone/iPad:</strong><br>
+                        1. Toque em <strong>Compartilhar</strong> 📤<br>
+                        2. Role e toque em <strong>Adicionar à Tela de Início</strong><br>
+                        3. Toque em <strong>Adicionar</strong>
+                    </p>
+                    <button onclick="closeInstallDialog()" style="background: #2e7d32; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                        Entendi
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(dialog);
+        }
+    </script>
+
+<script>
+        // Variáveis globais e funções principais
+        let config = { sps: [], totalSS: 0, globalColors: [] };
+    let croquiConfig = { points: [], modemIndex: null, links: [] };
+    let fusionConfig = { numSP: 0, ssStart: 0, ssEnd: 0, fiberStart: 0, fiberEnd: 0 };
+    const colorsList = ["Verde", "Amarelo", "Branco", "Azul", "Vermelho", "Violeta", "Marrom", "Rosa", "Preto", "Cinza", "Laranja", "Água Marinha"];
+    const ssColorStyles = {
+        "Verde": { background: "#16803c", text: "#ffffff" },
+        "Amarelo": { background: "#f2c500", text: "#202124" },
+        "Branco": { background: "#ffffff", text: "#202124" },
+        "Azul": { background: "#1769aa", text: "#ffffff" },
+        "Vermelho": { background: "#c62828", text: "#ffffff" },
+        "Violeta": { background: "#7b1fa2", text: "#ffffff" },
+        "Marrom": { background: "#795548", text: "#ffffff" },
+        "Rosa": { background: "#d81b60", text: "#ffffff" },
+        "Preto": { background: "#202124", text: "#ffffff" },
+        "Cinza": { background: "#70757a", text: "#ffffff" },
+        "Laranja": { background: "#ef6c00", text: "#ffffff" },
+        "Água Marinha": { background: "#008b8b", text: "#ffffff" }
+    };
+    const fiberColors = ["Azul", "Laranja", "Verde", "Marrom", "Cinza", "Branco", "Vermelho", "Preto"];
+
+    const stepHistory = [];
+
+    function updateBackButtonVisibility() {
+        const active = document.querySelector('.step.active');
+        const pageBackButtons = document.querySelectorAll('.page-back-btn');
+        pageBackButtons.forEach(btn => {
+            const visible = active && btn.closest('.step') === active && active.id !== 'mainMenu';
+            btn.style.display = visible ? 'flex' : 'none';
+        });
+    }
+
+    function showStep(id, pushHistory = true) {
+        const currentActive = document.querySelector('.step.active');
+        if (pushHistory && currentActive && currentActive.id && currentActive.id !== id) {
+            stepHistory.push(currentActive.id);
+        }
+
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        const appContainer = document.querySelector('.container');
+        if (appContainer) appContainer.classList.toggle('croqui-expanded', id === 'croquiStep');
+        updateBackButtonVisibility();
+        window.scrollTo(0,0);
+    }
+
+    function goBack() {
+        const prev = stepHistory.pop();
+        if (!prev) {
+            showStep('mainMenu', false);
+            return;
+        }
+        showStep(prev, false);
+    }
+
+    function showMainMenu() { showStep('mainMenu'); }
+    function startDGOIC() { showStep('dgoiStep1'); }
+    function startHPNA() { showStep('hpnaStep'); }
+    function startFusion() { showStep('fusionStep1'); }
+
+    const importantVideos = [
+        { category: 'Conectores e adaptadores ópticos', title: 'Conjunto Universal Redex', url: 'https://www.youtube.com/watch?v=4zbnNg2AH7U&t=1s' },
+        { category: 'Conectores e adaptadores ópticos', title: 'Conjunto Universal ARR Telecom', url: 'https://www.youtube.com/watch?v=55RKOLMa54g&t=2s' },
+        { category: 'Conectores e adaptadores ópticos', title: 'Conjunto Universal Bellari', url: 'https://www.youtube.com/watch?v=tYa-dEVS9pw' },
+        { category: 'Conectores e adaptadores ópticos', title: 'Conector óptico SC/APC Sumutômo FAC', url: 'https://www.youtube.com/watch?v=BaGrBZYZudk' },
+        { category: 'Conectores e adaptadores ópticos', title: 'Conector óptico SC/APC Telmill', url: 'https://www.youtube.com/watch?v=j1ETynSeLMk' },
+        { category: 'Conectores e adaptadores ópticos', title: 'Conjunto Universal Nano Fiber', url: 'https://www.youtube.com/watch?v=OnfKqfjTvWc' },
+        { category: 'Conectores e adaptadores ópticos', title: 'Gabaritos dos conectores mecânicos', url: 'https://www.youtube.com/watch?v=RCm3WBlMCa4' },
+        { category: 'Ferramentas e equipamentos ópticos', title: 'Ajuste do decapador de acrilato', url: 'https://www.youtube.com/watch?v=BfYP2jPxO6c' },
+        { category: 'Ferramentas e equipamentos ópticos', title: 'Power Meter 4x1', url: 'https://www.youtube.com/watch?v=7hOhHX-MBNg' },
+        { category: 'Ferramentas e equipamentos ópticos', title: 'Ajuste do Clivador', url: 'https://www.youtube.com/watch?v=0NohwlDWIFg' },
+        { category: 'Conectores de rede (RJ 45)', title: 'Conector RJ 45', url: 'https://www.youtube.com/watch?v=5tixBN7k-0Q' },
+        { category: 'Rede HPNA (coaxial)', title: 'Conector RG 6', url: 'https://www.youtube.com/watch?v=mUX6y89dtSs' },
+        { category: 'Base Port', title: 'Base Port 2', url: 'https://www.youtube.com/watch?v=lC3QoclnuyE' },
+        { category: 'Base Port', title: 'Base Port 3', url: 'https://www.youtube.com/watch?v=S7o6U_zHpC0' },
+        { category: 'Dispositivo HGU', title: 'HGU 6', url: 'https://www.youtube.com/watch?v=6QA_EsCuFgA' },
+        { category: 'Dispositivo HGU', title: 'HGU 5 (Modem e roteador)', url: 'https://www.youtube.com/watch?v=ZOQecnMgzyw' },
+        { category: 'Dispositivo HGU', title: 'HGU 5 (Modem)', url: 'https://www.youtube.com/watch?v=hpfWSrG0RpA' },
+        { category: 'Dispositivo HGU', title: 'HGU 5 (Função Wi-Fi)', url: 'https://www.youtube.com/watch?v=aG7ePls6rqc' },
+        { category: 'Dispositivo HGU', title: 'HGU 5 (Roteador)', url: 'https://www.youtube.com/watch?v=2fjoxuN6AFA' },
+        { category: 'Dispositivo HGU', title: 'HGU 5 (Teste de velocidade)', url: 'https://www.youtube.com/watch?v=UhkJF7tLjAI' },
+        { category: 'Dispositivo HGU', title: 'HGU 5 (IPTV) v1', url: 'https://www.youtube.com/watch?v=rXBaVbuho-E' },
+        { category: 'Dispositivo HGU', title: 'HGU 5 (IPTV) v2', url: 'https://www.youtube.com/watch?v=04iUuNwLfpg' },
+        { category: 'Dispositivo HGU', title: 'HGU 5 (VOIP)', url: 'https://www.youtube.com/watch?v=rkBQ1eVYOmU' }
+    ];
+
+    function startVideos() {
+        const categoryFilter = document.getElementById('videoCategoryFilter');
+        if (categoryFilter.options.length === 1) {
+            [...new Set(importantVideos.map(video => video.category))].forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                categoryFilter.appendChild(option);
+            });
+        }
+        categoryFilter.value = 'all';
+        renderVideos();
+        showStep('videosStep');
+    }
+
+    function renderVideos() {
+        const category = document.getElementById('videoCategoryFilter').value;
+        const videoList = document.getElementById('videoList');
+        videoList.textContent = '';
+
+        const filteredVideos = category === 'all'
+            ? importantVideos
+            : importantVideos.filter(video => video.category === category);
+
+        filteredVideos.forEach(video => {
+            const card = document.createElement('article');
+            card.className = 'video-card';
+
+            const videoId = new URL(video.url).searchParams.get('v');
+            if (videoId) {
+                const thumbnailLink = document.createElement('a');
+                thumbnailLink.className = 'video-thumbnail-link';
+                thumbnailLink.href = video.url;
+                thumbnailLink.setAttribute('aria-label', `Assistir ${video.title} no YouTube`);
+
+                const thumbnail = document.createElement('img');
+                thumbnail.className = 'video-thumbnail';
+                thumbnail.src = `https://img.youtube.com/vi/${encodeURIComponent(videoId)}/hqdefault.jpg`;
+                thumbnail.alt = `Miniatura do vídeo: ${video.title}`;
+                thumbnail.loading = 'lazy';
+                thumbnailLink.appendChild(thumbnail);
+
+                const playIcon = document.createElement('span');
+                playIcon.className = 'video-thumbnail-play';
+                playIcon.setAttribute('aria-hidden', 'true');
+                playIcon.textContent = '▶';
+                thumbnailLink.appendChild(playIcon);
+                card.appendChild(thumbnailLink);
+            }
+
+            const categoryLabel = document.createElement('span');
+            categoryLabel.className = 'video-card-category';
+            categoryLabel.textContent = video.category;
+            card.appendChild(categoryLabel);
+
+            const title = document.createElement('h3');
+            title.textContent = video.title;
+            card.appendChild(title);
+
+            const watchLink = document.createElement('a');
+            watchLink.className = 'video-watch-btn';
+            watchLink.href = video.url;
+            watchLink.textContent = '▶ Assistir no YouTube';
+            card.appendChild(watchLink);
+
+            videoList.appendChild(card);
+        });
+    }
+
+    function startCroqui() {
+        croquiConfig = { modem: null, nextId: 1, nodes: [], edges: [], pending: null };
+        closeCroquiFullscreen();
+        document.getElementById('croquiProgress').style.display = 'none';
+        document.getElementById('croquiResult').style.display = 'none';
+        document.getElementById('croquiStartButton').style.display = 'block';
+        showStep('croquiStep');
+    }
+
+    function startCroquiSetup() {
+        croquiConfig = { modem: null, nextId: 1, nodes: [], edges: [], pending: null };
+        openCroquiDialog(`
+            <h3 id="croquiDialogTitle">Local do Modem HPNA</h3>
+            <p>Informe onde o modem está instalado. Esse nome será o ponto inicial do croqui.</p>
+            <div class="input-group">
+                <label>Local do Modem HPNA</label>
+                <div class="input-wrapper"><input id="croquiModemName" type="text" placeholder="Ex: Sala" autofocus></div>
+            </div>
+            <div class="croqui-dialog-actions"><button class="btn btn-primary" onclick="saveCroquiModem()">Salvar</button></div>
+        `);
+    }
+
+    function openCroquiDialog(content) {
+        const backdrop = document.getElementById('croquiDialogBackdrop');
+        document.getElementById('croquiDialog').innerHTML = content;
+        backdrop.classList.add('open');
+        backdrop.setAttribute('aria-hidden', 'false');
+        const dialog = document.getElementById('croquiDialog');
+        const focusableFields = dialog.querySelectorAll('input, select, textarea');
+        focusableFields.forEach(field => {
+            field.addEventListener('focus', () => {
+                backdrop.classList.add('keyboard-open');
+                setTimeout(() => field.scrollIntoView({ block: 'center', behavior: 'smooth' }), 180);
+            });
+            field.addEventListener('blur', () => {
+                setTimeout(() => {
+                    if (!dialog.querySelector('input:focus, select:focus, textarea:focus')) backdrop.classList.remove('keyboard-open');
+                }, 250);
+            });
+        });
+        const autofocus = dialog.querySelector('[autofocus]');
+        if (autofocus) setTimeout(() => autofocus.focus(), 0);
+    }
+
+    function closeCroquiDialog() {
+        const backdrop = document.getElementById('croquiDialogBackdrop');
+        backdrop.classList.remove('open');
+        backdrop.setAttribute('aria-hidden', 'true');
+    }
+
+    function escapeCroquiText(value) {
+        return String(value).replace(/[&<>"']/g, character => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[character]));
+    }
+
+    function saveCroquiModem() {
+        const name = document.getElementById('croquiModemName').value.trim();
+        if (!name) { alert('Informe o local do Modem HPNA.'); return; }
+        const modem = { id: 'node-0', type: 'modem', name, children: [] };
+        croquiConfig.modem = modem;
+        croquiConfig.nodes.push(modem);
+        closeCroquiDialog();
+        document.getElementById('croquiStartButton').style.display = 'none';
+        document.getElementById('croquiProgress').style.display = 'block';
+        promptCroquiConnection(modem, null);
+    }
+
+    function promptCroquiConnection(parent, portIndex) {
+        const portLabel = portIndex === null ? `Do modem HPNA (${parent.name}) vai para onde?` : `Da porta ${portIndex} do ${parent.name} vai para onde?`;
+        const title = portIndex === null ? 'Primeiro trajeto' : `Configurar porta ${portIndex}`;
+        const unusedOption = parent.type === '1x4' ? '<option value="unused">Não utilizada</option>' : '';
+        openCroquiDialog(`
+            <h3 id="croquiDialogTitle">${title}</h3>
+            <p>${escapeCroquiText(portLabel)} Informe a metragem e o próximo elemento.</p>
+            <div class="croqui-grid">
+                <div class="input-group">
+                    <label>Metragem do cabo</label>
+                    <div class="input-wrapper"><input id="croquiCableValue" type="text" inputmode="decimal" autocomplete="off" placeholder="Ex: 2,5" autofocus></div>
+                </div>
+                <div class="input-group">
+                    <label>Unidade</label>
+                    <div class="input-wrapper"><select id="croquiCableUnit"><option value="m">Metros</option><option value="cm">Centímetros</option></select></div>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Próximo destino</label>
+                <div class="input-wrapper"><select id="croquiNextType" onchange="renderCroquiDestinationFields()"><option value="stb">STB</option><option value="1x2">Divisor 1x2</option><option value="1x4">Divisor 1x4</option>${unusedOption}</select></div>
+            </div>
+            <div id="croquiDestinationFields"></div>
+            <div id="croquiDialogError" class="error-msg" style="display:none; color:#b42318; background:#fff1f0; padding:9px; border-radius:8px; margin-top:10px;"></div>
+            <div class="croqui-dialog-actions"><button type="button" class="btn btn-secondary" onclick="closeCroquiDialog()">Cancelar</button><button type="button" class="btn btn-primary" onclick="event.preventDefault(); saveCroquiConnection('${parent.id}', ${portIndex === null ? 'null' : portIndex})">Salvar</button></div>
+        `);
+        renderCroquiDestinationFields();
+    }
+
+    function renderCroquiDestinationFields() {
+        const type = document.getElementById('croquiNextType').value;
+        const fields = document.getElementById('croquiDestinationFields');
+        if (type === 'unused') {
+            fields.innerHTML = '<div class="croqui-link-summary">Esta porta ficará sem utilização. Essa opção pode ser usada apenas uma vez em cada divisor 1x4.</div>';
+            document.getElementById('croquiCableValue').value = '0';
+            return;
+        }
+        if (type === 'stb') {
+            fields.innerHTML = `<div class="input-group"><label>Local do STB</label><div class="input-wrapper"><input id="croquiDestinationName" type="text" placeholder="Ex: Quarto Casal"></div></div>`;
+        } else {
+            fields.innerHTML = `<div class="input-group"><label>Identificação do divisor</label><div class="input-wrapper"><input id="croquiDestinationName" type="text" placeholder="Ex: Divisor da sala"></div></div>`;
+        }
+    }
+
+    function croquiToMeters() {
+        const field = document.getElementById('croquiCableValue');
+        const raw = parseFloat(String(field ? field.value : '').replace(',', '.').replace(/[^0-9.]/g, ''));
+        if (!Number.isFinite(raw) || raw <= 0) return 0;
+        return document.getElementById('croquiCableUnit').value === 'cm' ? raw / 100 : raw;
+    }
+
+    function showCroquiDialogError(message) {
+        const error = document.getElementById('croquiDialogError');
+        if (!error) { alert(message); return; }
+        error.textContent = message;
+        error.style.display = 'block';
+    }
+
+    function saveCroquiConnection(parentId, portIndex) {
+        try {
+        const meterField = document.getElementById('croquiCableValue');
+        const typeField = document.getElementById('croquiNextType');
+        if (!meterField || !typeField) {
+            showCroquiDialogError('O formulário do trajeto não foi carregado. Feche e toque em Iniciar novamente.');
+            return;
+        }
+        const meters = croquiToMeters();
+        const type = typeField.value;
+        const nameField = document.getElementById('croquiDestinationName');
+        const enteredName = nameField ? nameField.value.trim() : '';
+        const parent = croquiConfig.nodes.find(node => node.id === parentId);
+        if (!parent) { showCroquiDialogError('Não foi possível localizar o ponto de origem. Reinicie o Croqui.'); return; }
+        if (type === 'unused') {
+            if (parent.type !== '1x4' || parent.children.some(childId => croquiConfig.nodes.find(node => node.id === childId)?.type === 'unused')) {
+                alert('A porta não utilizada só pode ser marcada uma vez em um divisor 1x4.');
+                return;
+            }
+            const unused = { id: `node-${croquiConfig.nextId++}`, type: 'unused', name: 'Porta não utilizada', children: [], closed: true };
+            croquiConfig.nodes.push(unused);
+            croquiConfig.edges.push({ parentId, childId: unused.id, portIndex, meters: 0, connectors: 0, dividerLoss: 0 });
+            parent.children.push(unused.id);
+            closeCroquiDialog();
+            continueCroquiFlow();
+            return;
+        }
+        if (!meters) { showCroquiDialogError('Informe uma metragem válida, por exemplo 6 ou 2,5.'); return; }
+        if (type === 'stb' && !enteredName) { showCroquiDialogError('Informe o local do STB.'); return; }
+        const name = enteredName || `Divisor ${type} ${croquiConfig.nextId}`;
+        if (croquiConfig.nodes.some(node => node.name.toLowerCase() === name.toLowerCase())) {
+            alert('Esse local já foi usado. Informe outro nome.');
+            return;
+        }
+
+        const node = { id: `node-${croquiConfig.nextId++}`, type, name, children: [], closed: type === 'stb' };
+        const edge = { parentId, childId: node.id, portIndex, meters, connectors: 2, dividerLoss: 0 };
+        croquiConfig.nodes.push(node);
+        croquiConfig.edges.push(edge);
+        parent.children.push(node.id);
+        closeCroquiDialog();
+
+        if (type === 'stb') {
+            continueCroquiFlow();
+        } else {
+            node.ports = type === '1x2' ? 2 : 4;
+            node.usedPorts = 0;
+            node.dividerLoss = type === '1x2' ? 8 : 12;
+            edge.dividerLoss = node.dividerLoss;
+            promptCroquiPort(node, 1);
+        }
+        } catch (error) {
+            showCroquiDialogError(`Não foi possível salvar este trajeto: ${error.message}`);
+            console.error('Croqui save error', error);
+        }
+    }
+
+    function promptCroquiPort(divider, portIndex) {
+        const total = divider.ports;
+        divider.usedPorts = portIndex;
+        openCroquiDialog(`
+            <h3 id="croquiDialogTitle">${escapeCroquiText(divider.name)}</h3>
+            <p>Configure a ponta ${portIndex} de ${total}. Cada ponta deve ir para outro divisor, um STB ou, no caso do 1x4, ser marcada como não utilizada.</p>
+            <div class="croqui-port-card"><strong>Porta ${portIndex} de ${total}</strong><span>O cabo desta saída será informado no próximo passo.</span></div>
+            <div class="croqui-dialog-actions"><button class="btn btn-primary" onclick="promptCroquiConnection(croquiConfig.nodes.find(node => node.id === '${divider.id}'), ${portIndex})">Configurar porta</button></div>
+        `);
+    }
+
+    function continueCroquiFlow() {
+        const pending = [...croquiConfig.nodes].reverse().find(node => node.type === '1x2' || node.type === '1x4' ? node.usedPorts < node.ports : false);
+        if (pending) {
+            pending.usedPorts += 1;
+            promptCroquiPort(pending, pending.usedPorts);
+            return;
+        }
+        finishCroqui();
+    }
+
+    function finishCroqui() {
+        const incomplete = croquiConfig.nodes.find(node => (node.type === '1x2' || node.type === '1x4') && node.usedPorts !== node.ports);
+        if (incomplete) {
+            promptCroquiPort(incomplete, incomplete.usedPorts + 1);
+            return;
+        }
+        const orphan = croquiConfig.nodes.find(node => node.id !== croquiConfig.modem.id && !croquiConfig.edges.some(edge => edge.childId === node.id));
+        if (orphan) {
+            showCroquiDialogError(`O ponto ${orphan.name} está sem conexão.`);
+            return;
+        }
+        closeCroquiDialog();
+        renderCroquiResult();
+        document.getElementById('croquiResult').style.display = 'block';
+        document.getElementById('croquiProgress').style.display = 'none';
+    }
+
+    function croquiNode(name, type, subtitle) {
+        const dividerImage = type === 'divisor' ? `<img src="file:///android_asset/${subtitle.startsWith('1x4') ? '1x4.png' : '1x2.png'}" alt="${escapeCroquiText(subtitle)}">` : '';
+        return `<div class="croqui-node ${type}">${dividerImage}<strong>${escapeCroquiText(name)}</strong><small>${escapeCroquiText(subtitle)}</small></div>`;
+    }
+
+    function renderCroquiResult() {
+        const modem = croquiConfig.modem;
+        const drawing = `<div class="croqui-house-label">DISTRIBUIÇÃO DA CASA • arraste para navegar</div><div class="croqui-canvas"><div class="croqui-sketch">${renderCroquiSketch(modem)}</div></div>`;
+        document.getElementById('croquiFullscreenHouse').innerHTML = drawing;
+        enableCroquiPan(document.getElementById('croquiFullscreenHouse'));
+        const stbs = croquiConfig.nodes.filter(node => node.type === 'stb');
+        document.getElementById('croquiLosses').innerHTML = stbs.map(stb => {
+            const totals = getCroquiStbTotals(stb);
+            return `<div class="croqui-link-summary"><strong>${escapeCroquiText(stb.name)}</strong>: cabo total desde o Modem HPNA ${totals.meters.toFixed(2)} m • perda total ${totals.loss.toFixed(2)} dB</div>`;
+        }).join('');
+    }
+
+    function sketchNode(text) {
+        return `<div class="croqui-sketch-node">[ ${escapeCroquiText(text)} ]</div>`;
+    }
+
+    function sketchDistance(value) {
+        return `<div class="croqui-sketch-distance">${value.toFixed(2)} m</div>`;
+    }
+
+    function croquiChildren(node) {
+        return node.children.map(childId => {
+            const child = croquiConfig.nodes.find(candidate => candidate.id === childId);
+            const edge = croquiConfig.edges.find(candidate => candidate.childId === child.id);
+            return { child, edge };
+        }).sort((left, right) => {
+            const leftPort = Number.isFinite(left.edge.portIndex) ? left.edge.portIndex : Number.MAX_SAFE_INTEGER;
+            const rightPort = Number.isFinite(right.edge.portIndex) ? right.edge.portIndex : Number.MAX_SAFE_INTEGER;
+            return leftPort - rightPort;
+        });
+    }
+
+    function renderCroquiSketch(modem) {
+        const first = croquiChildren(modem)[0];
+        if (!first) return `<div class="croqui-sketch-center">${sketchNode(`Modem HPNA • ${modem.name}`)}</div>`;
+        if (first.child.type === 'stb') {
+            return `<div class="croqui-sketch-center">${sketchNode(`Modem HPNA • ${modem.name}`)}<div class="croqui-sketch-vertical"></div>${sketchDistance(first.edge.meters)}<div class="croqui-sketch-point-name">${escapeCroquiText(first.child.name)}</div>${renderCroquiSketchStb(first.child)}</div>`;
+        }
+        return `<div class="croqui-sketch-center">${sketchNode(`Modem HPNA • ${modem.name}`)}<div class="croqui-sketch-vertical"></div>${sketchDistance(first.edge.meters)}${sketchNode(`Divisor ${first.child.type}`)}</div>${renderCroquiSketchDivider(first.child)}`;
+    }
+
+    function renderCroquiSketchDivider(divider) {
+        const children = croquiChildren(divider);
+        const columns = Math.max(2, divider.ports || children.length || 2);
+        const branches = children.map((item, index) => renderCroquiSketchBranch(item, index, columns)).join('');
+        const gridClass = columns === 4 ? 'count-4' : 'count-2';
+        return `<div class="croqui-sketch-output-stem"></div><div class="croqui-sketch-junction"></div><div class="croqui-sketch-first-branches ${gridClass}">${branches}</div>`;
+    }
+
+    function renderCroquiSketchBranch(item, index, count) {
+        const { child, edge } = item;
+        const portIndex = Number.isFinite(edge.portIndex) ? edge.portIndex : index + 1;
+        let direction = 'center';
+        if (count === 2) {
+            direction = portIndex === 1 ? 'left' : 'right';
+        } else if (count === 4) {
+            direction = ['left-far', 'left', 'right', 'right-far'][portIndex - 1] || 'center';
+        }
+        const cable = `<div class="croqui-sketch-diagonal ${direction}"></div>${sketchDistance(edge.meters)}`;
+        if (child.type === 'unused') {
+            return `<div class="croqui-sketch-branch">${cable}<div class="croqui-sketch-point-name">X</div>${sketchNode('sem conexão')}</div>`;
+        }
+        if (child.type === 'stb') {
+            return `<div class="croqui-sketch-branch">${cable}<div class="croqui-sketch-point-name">${escapeCroquiText(child.name)}</div>${renderCroquiSketchStb(child)}</div>`;
+        }
+        return `<div class="croqui-sketch-branch" data-port-index="${portIndex}">${cable}${sketchNode(`Divisor ${child.type}`)}${renderCroquiSketchDivider(child)}</div>`;
+    }
+
+    function renderCroquiSketchDownstream(divider) {
+        const outputs = croquiChildren(divider).filter(item => item.child.type === 'stb' || item.child.type === 'unused');
+        const directionFor = (item, index) => {
+            const portIndex = Number.isFinite(item.edge.portIndex) ? item.edge.portIndex : index + 1;
+            return outputs.length === 4 ? ['left-far', 'left', 'right', 'right-far'][portIndex - 1] || 'center' : portIndex === 1 ? 'left' : 'right';
+        };
+        return `<div class="croqui-sketch-downstream"><div class="croqui-sketch-vertical"></div><div class="croqui-sketch-junction"></div><div class="croqui-sketch-downstream-branches">${outputs.map((item, index) => `<div class="croqui-sketch-downstream-branch"><div class="croqui-sketch-diagonal ${directionFor(item, index)}"></div>${sketchDistance(item.edge.meters)}${item.child.type === 'unused' ? '<div class="croqui-sketch-point-name">X</div>' : `<div class="croqui-sketch-point-name">${escapeCroquiText(item.child.name)}</div>${renderCroquiSketchStb(item.child)}`}</div>`).join('')}</div></div>`;
+    }
+
+    function renderCroquiSketchStb(stb) {
+        const totals = getCroquiStbTotals(stb);
+        return sketchNode(`STB ${totals.loss.toFixed(2)} dB`);
+    }
+
+    function renderCroquiCleanStage(node) {
+        const firstChild = node.children.length === 1 ? croquiConfig.nodes.find(candidate => candidate.id === node.children[0]) : null;
+        const firstEdge = firstChild ? croquiConfig.edges.find(candidate => candidate.childId === firstChild.id) : null;
+        if (node.type === 'modem' && firstChild && (firstChild.type === '1x2' || firstChild.type === '1x4')) {
+            return `<div class="croqui-clean-source">${renderCroquiNodeBox(node)}</div><div class="croqui-clean-vertical-link"><span>${firstEdge.meters.toFixed(2)} m</span></div>${renderCroquiCleanDividerStage(firstChild)}`;
+        }
+        if (node.type === 'modem' && firstChild && firstChild.type === 'stb') {
+            return `<div class="croqui-clean-source">${renderCroquiNodeBox(node)}</div><div class="croqui-clean-branch"><div class="croqui-clean-line"><span>${firstEdge.meters.toFixed(2)} m</span></div>${renderCroquiCleanStbTarget(firstChild)}</div>`;
+        }
+        return renderCroquiCleanDividerStage(node);
+    }
+
+    function renderCroquiCleanDividerStage(node) {
+        return `<div class="croqui-clean-divider-stage"><div class="croqui-clean-source">${renderCroquiNodeBox(node)}</div>${renderCroquiCleanOutputs(node)}</div>`;
+    }
+
+    function renderCroquiCleanOutputs(node) {
+        const children = node.children.map(childId => {
+            const child = croquiConfig.nodes.find(candidate => candidate.id === childId);
+            const edge = croquiConfig.edges.find(candidate => candidate.childId === child.id);
+            return { child, edge };
+        }).sort((left, right) => {
+            const leftDivider = left.child.type === '1x2' || left.child.type === '1x4';
+            const rightDivider = right.child.type === '1x2' || right.child.type === '1x4';
+            if (leftDivider !== rightDivider) return leftDivider ? 1 : -1;
+            return left.edge.meters - right.edge.meters;
+        });
+
+        return `<div class="croqui-clean-outputs">${children.map(({ child, edge }) => renderCroquiCleanBranch(child, edge)).join('')}</div>`;
+    }
+
+    function renderCroquiCleanDownstream(child, edge) {
+        return `<div class="croqui-clean-downstream"><div class="croqui-clean-vertical-link"><span>${edge.meters.toFixed(2)} m</span></div>${renderCroquiCleanDividerStage(child)}</div>`;
+    }
+
+    function renderCroquiCleanStbTarget(child) {
+        const totals = getCroquiStbTotals(child);
+        return `<div class="croqui-clean-target"><div class="croqui-clean-point-name">${escapeCroquiText(child.name)}</div><div class="croqui-clean-point-card">STB<small>${totals.meters.toFixed(2)} m<br>${totals.loss.toFixed(2)} dB</small></div></div>`;
+    }
+
+    function renderCroquiCleanBranch(child, edge) {
+        if (child.type === 'unused') {
+            return `<div class="croqui-clean-branch"><div class="croqui-clean-line"><span>sem cabo</span></div><div class="croqui-clean-unused">X • saída sem conexão</div></div>`;
+        }
+
+        if (child.type === 'stb') {
+            return `<div class="croqui-clean-branch"><div class="croqui-clean-line"><span>${edge.meters.toFixed(2)} m</span></div>${renderCroquiCleanStbTarget(child)}</div>`;
+        }
+
+        return `<div class="croqui-clean-branch"><div class="croqui-clean-line"><span>${edge.meters.toFixed(2)} m</span></div><div class="croqui-clean-target">${renderCroquiNodeBox(child)}${renderCroquiCleanOutputs(child)}</div></div>`;
+    }
+
+    function renderCroquiStbTarget(node, edge) {
+        const totals = getCroquiStbTotals(node);
+        const stbCard = `<div class="croqui-step-box stb"><strong>STB</strong><span class="stb-total">${totals.meters.toFixed(2)} m<br>${totals.loss.toFixed(2)} dB</span></div>`;
+        return `<div class="croqui-point-target" data-cable="${edge.meters.toFixed(2)} m"><div class="croqui-point-name">${escapeCroquiText(node.name)}</div>${stbCard}</div>`;
+    }
+
+    function collectCroquiColumnRows(node, rows) {
+        const directStbs = node.children.map(childId => {
+            const child = croquiConfig.nodes.find(candidate => candidate.id === childId);
+            const edge = croquiConfig.edges.find(candidate => candidate.childId === child.id);
+            return { child, edge };
+        }).filter(item => item.child.type === 'stb')
+            .sort((left, right) => left.edge.meters - right.edge.meters);
+
+        if (!directStbs.length) {
+            rows.push({ left: renderCroquiNodeBox(node), right: '', connected: false });
+        } else {
+            directStbs.forEach((item, index) => {
+                rows.push({
+                    left: index === 0 ? renderCroquiNodeBox(node) : '<div class="croqui-left-branch-line"></div>',
+                    right: renderCroquiStbTarget(item.child, item.edge),
+                    connected: true
+                });
+            });
+        }
+
+        node.children.map(childId => croquiConfig.nodes.find(candidate => candidate.id === childId))
+            .filter(child => child.type === '1x2' || child.type === '1x4')
+            .forEach(child => collectCroquiColumnRows(child, rows));
+    }
+
+    function renderCroquiNodeBox(node) {
+        if (node.type === 'unused') return '<div class="croqui-step-box">Porta não utilizada</div>';
+        if (node.type === 'modem') return `<div class="croqui-step-box modem"><strong>Modem HPNA</strong><small>${escapeCroquiText(node.name)}</small></div>`;
+        if (node.type === 'stb') return `<div class="croqui-step-box stb"><strong>STB</strong></div>`;
+        const image = node.type === '1x4' ? '1x4.png' : '1x2.png';
+        return `<div class="croqui-step-box divisor"><img src="file:///android_asset/${image}" alt="${node.type}"><span>${escapeCroquiText(node.name)}</span></div>`;
+    }
+
+    function getCroquiStbTotals(stb) {
+        let meters = 0;
+        let loss = 0;
+        let current = stb;
+        while (current && current.id !== croquiConfig.modem.id) {
+            const edge = croquiConfig.edges.find(candidate => candidate.childId === current.id);
+            if (!edge) break;
+            meters += edge.meters;
+            loss += edge.meters * 0.06 + edge.connectors * 0.15 + edge.dividerLoss;
+            current = croquiConfig.nodes.find(candidate => candidate.id === edge.parentId);
+        }
+        return { meters, loss };
+    }
+
+    function renderCroquiBranch(child, edge) {
+        const label = `${edge.meters.toFixed(2)} m`;
+        if (child.type === 'unused') {
+            return `<div class="croqui-branch-row"><div class="croqui-horizontal-link"><span class="croqui-cable-label">sem cabo</span></div><div class="croqui-unused-x">×</div></div>`;
+        }
+        const target = child.type === 'stb' ? (() => {
+            const totals = getCroquiStbTotals(child);
+            return `<div class="croqui-point-target"><div class="croqui-point-name">${escapeCroquiText(child.name)}</div>${renderCroquiNodeBox(child)}<div class="croqui-point-info">Cabo total: ${totals.meters.toFixed(2)} m desde o modem<br>Perda total: ${totals.loss.toFixed(2)} dB</div></div>`;
+        })() : `<div class="croqui-branch-target">${renderCroquiNodeBox(child)}</div>`;
+        return `<div class="croqui-branch-row"><div class="croqui-horizontal-link"><span class="croqui-cable-label">${label}</span></div>${target}</div>`;
+    }
+
+    function renderCroquiBranches(node) {
+        return node.children.map(childId => {
+            const child = croquiConfig.nodes.find(candidate => candidate.id === childId);
+            const edge = croquiConfig.edges.find(candidate => candidate.childId === child.id);
+            return { child, edge };
+        }).sort((left, right) => {
+            const leftIsDivider = left.child.type === '1x2' || left.child.type === '1x4';
+            const rightIsDivider = right.child.type === '1x2' || right.child.type === '1x4';
+            if (leftIsDivider !== rightIsDivider) return leftIsDivider ? 1 : -1;
+            return left.edge.meters - right.edge.meters;
+        })
+            .map(item => {
+                const branch = renderCroquiBranch(item.child, item.edge);
+                if (item.child.type === '1x2' || item.child.type === '1x4') {
+                    return `${branch}<div class="croqui-downstream-divider"><div class="croqui-point-name">Saídas do ${escapeCroquiText(item.child.name)}</div><div class="croqui-nested-branches">${renderCroquiBranches(item.child)}</div></div>`;
+                }
+                return branch;
+            })
+            .join('');
+    }
+
+    function renderCroquiFlow(node, isRoot = false) {
+        const nodeBox = renderCroquiNodeBox(node);
+        if (!node.children.length) return nodeBox;
+        if (isRoot && node.children.length === 1) {
+            const firstChild = croquiConfig.nodes.find(candidate => candidate.id === node.children[0]);
+            const firstEdge = croquiConfig.edges.find(candidate => candidate.childId === firstChild.id);
+            if (firstChild.type !== 'stb') {
+                return `<div class="croqui-flow-node">${nodeBox}<div class="croqui-vertical-link"><span class="croqui-cable-label">${firstEdge.meters.toFixed(2)} m</span></div><div class="croqui-branch-target">${renderCroquiNodeBox(firstChild)}</div><div class="croqui-downstream-divider"><div class="croqui-point-name">Saídas do ${escapeCroquiText(firstChild.name)}</div><div class="croqui-nested-branches">${renderCroquiBranches(firstChild)}</div></div></div>`;
+            }
+        }
+        return `<div class="croqui-flow-node">${nodeBox}<div class="croqui-branch-list">${renderCroquiBranches(node)}</div></div>`;
+    }
+
+    function openCroquiFullscreen() {
+        const fullscreen = document.getElementById('croquiFullscreen');
+        fullscreen.classList.add('open');
+        fullscreen.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        try {
+            if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(() => {});
+        } catch (error) {
+            // Orientation lock is optional on WebView versions that do not expose it.
+        }
+    }
+
+    function closeCroquiFullscreen() {
+        const fullscreen = document.getElementById('croquiFullscreen');
+        if (!fullscreen) return;
+        fullscreen.classList.remove('open');
+        fullscreen.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        try {
+            if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
+        } catch (error) {
+            // Orientation unlock is optional on WebView versions that do not expose it.
+        }
+    }
+
+    function enableCroquiPan(house) {
+        const sketch = house.querySelector('.croqui-sketch');
+        const pointers = new Map();
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let scrollStartLeft = 0;
+        let scrollStartTop = 0;
+        let pinchStartDistance = 0;
+        let pinchStartZoom = 1;
+        let zoom = 1;
+
+        const distanceBetweenPointers = () => {
+            const values = [...pointers.values()];
+            if (values.length < 2) return 0;
+            return Math.hypot(values[0].x - values[1].x, values[0].y - values[1].y);
+        };
+
+        const applyZoom = nextZoom => {
+            zoom = Math.max(0.75, Math.min(2.5, nextZoom));
+            if (!sketch) return;
+            sketch.style.transform = `scale(${zoom})`;
+            sketch.style.width = `${760 * zoom}px`;
+            sketch.style.minWidth = `${760 * zoom}px`;
+        };
+
+        house.onpointerdown = event => {
+            pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+            house.setPointerCapture(event.pointerId);
+            if (pointers.size === 2) {
+                pinchStartDistance = distanceBetweenPointers();
+                pinchStartZoom = zoom;
+                house.classList.remove('dragging');
+                return;
+            }
+            dragStartX = event.clientX;
+            dragStartY = event.clientY;
+            scrollStartLeft = house.scrollLeft;
+            scrollStartTop = house.scrollTop;
+            house.classList.add('dragging');
+            house.setPointerCapture(event.pointerId);
+        };
+
+        house.onpointermove = event => {
+            if (pointers.has(event.pointerId)) pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+            if (pointers.size >= 2 && pinchStartDistance) {
+                const currentDistance = distanceBetweenPointers();
+                if (currentDistance > 0) applyZoom(pinchStartZoom * (currentDistance / pinchStartDistance));
+                return;
+            }
+            if (!house.classList.contains('dragging')) return;
+            house.scrollLeft = scrollStartLeft - (event.clientX - dragStartX);
+            house.scrollTop = scrollStartTop - (event.clientY - dragStartY);
+        };
+
+        house.onpointerup = event => {
+            pointers.delete(event.pointerId);
+            if (pointers.size < 2) pinchStartDistance = 0;
+            house.classList.remove('dragging');
+            if (house.hasPointerCapture(event.pointerId)) house.releasePointerCapture(event.pointerId);
+        };
+
+        house.onpointercancel = event => {
+            pointers.delete(event.pointerId);
+            pinchStartDistance = 0;
+            house.classList.remove('dragging');
+        };
+    }
+
+    function openModal(id) { document.getElementById(id).style.display = "block"; }
+    function closeModal(id) { document.getElementById(id).style.display = "none"; }
+
+    function calculateHPNA() {
+        const d1x2 = parseFloat(document.getElementById('div1x2').value) || 0;
+        const d1x4 = parseFloat(document.getElementById('div1x4').value) || 0;
+        const connectors = parseFloat(document.getElementById('conectorCount').value) || 0;
+        const meters = parseFloat(document.getElementById('coaxialMeters').value) || 0;
+        const totalLoss = (d1x2 * 8.0) + (d1x4 * 12.0) + (connectors * 0.15) + (meters * 0.06);
+        const finalPower = totalLoss > 0 ? -totalLoss : 0;
+        document.getElementById('hpnaResultVal').innerText = `${finalPower.toFixed(2)} dBm`;
+    }
+
+    // Funções do DGOI Fusionado
+    function goToFusionStep2() {
+        const numSP = parseInt(document.getElementById('fusionNumSP').value);
+        if (isNaN(numSP) || numSP < 1) { alert('Informe um número válido de SP (mínimo 1).'); return; }
+        
+        fusionConfig.numSP = numSP;
+        document.getElementById('fusionSPNum').textContent = numSP;
+        showStep('fusionStep2');
+        
+        // Adicionar listeners para cálculo automático
+        document.getElementById('fusionSSStart').oninput = updateFusionSSCalc;
+        document.getElementById('fusionSSEnd').oninput = updateFusionSSCalc;
+    }
+
+    function updateFusionSSCalc() {
+        const start = parseInt(document.getElementById('fusionSSStart').value) || 0;
+        const end = parseInt(document.getElementById('fusionSSEnd').value) || 0;
+        
+        if (start > 0 && end >= start) {
+            const total = (end - start) + 1;
+            document.getElementById('fusionSSTotal').textContent = total;
+        } else {
+            document.getElementById('fusionSSTotal').textContent = '0';
+        }
+    }
+
+    function goToFusionStep3() {
+        const ssStart = parseInt(document.getElementById('fusionSSStart').value);
+        const ssEnd = parseInt(document.getElementById('fusionSSEnd').value);
+        
+        if (isNaN(ssStart) || isNaN(ssEnd) || ssStart < 1 || ssEnd < ssStart) {
+            alert('Por favor, informe valores válidos para o intervalo de SS.');
+            return;
+        }
+        
+        fusionConfig.ssStart = ssStart;
+        fusionConfig.ssEnd = ssEnd;
+        showStep('fusionStep3');
+        
+        // Adicionar listeners para cálculo automático
+        document.getElementById('fusionFiberStart').oninput = updateFusionFiberCalc;
+        document.getElementById('fusionFiberEnd').oninput = updateFusionFiberCalc;
+    }
+
+    function updateFusionFiberCalc() {
+        const start = parseInt(document.getElementById('fusionFiberStart').value) || 0;
+        const end = parseInt(document.getElementById('fusionFiberEnd').value) || 0;
+        
+        if (start > 0 && end >= start) {
+            const totalFibers = (end - start) + 1;
+            const totalSS = (fusionConfig.ssEnd - fusionConfig.ssStart) + 1;
+            const fibersPerSS = totalFibers / totalSS;
+            
+            document.getElementById('fusionFiberTotal').textContent = totalFibers;
+            document.getElementById('fusionFibersPerSS').textContent = fibersPerSS.toFixed(1);
+        } else {
+            document.getElementById('fusionFiberTotal').textContent = '0';
+            document.getElementById('fusionFibersPerSS').textContent = '0';
+        }
+    }
+
+    function goToFusionStep4() {
+        const fiberStart = parseInt(document.getElementById('fusionFiberStart').value);
+        const fiberEnd = parseInt(document.getElementById('fusionFiberEnd').value);
+        
+        if (isNaN(fiberStart) || isNaN(fiberEnd) || fiberStart < 1 || fiberEnd < fiberStart) {
+            alert('Por favor, informe valores válidos para o intervalo de fibras.');
+            return;
+        }
+        
+        fusionConfig.fiberStart = fiberStart;
+        fusionConfig.fiberEnd = fiberEnd;
+        showStep('fusionStep4');
+    }
+
+    function calculateFusion() {
+        const targetFiber = parseInt(document.getElementById('fusionTargetFiber').value);
+        
+        if (isNaN(targetFiber) || targetFiber < fusionConfig.fiberStart || targetFiber > fusionConfig.fiberEnd) {
+            document.getElementById('fusionResult').innerHTML = '<h2 style="margin: 10px 0; font-size: 1.5rem;">Fibra fora do intervalo</h2>';
+            if (!isNaN(targetFiber)) {
+                alert(`Fibra fora do intervalo. Intervalo: ${fusionConfig.fiberStart} a ${fusionConfig.fiberEnd}.`);
+            } else {
+                alert('Informe um número de fibra válido.');
+            }
+            return;
+        }
+        
+        const totalSS = (fusionConfig.ssEnd - fusionConfig.ssStart) + 1;
+        const totalFibers = (fusionConfig.fiberEnd - fusionConfig.fiberStart) + 1;
+        const fibersPerSS = totalFibers / totalSS;
+        
+        // Calcular qual SS pertence
+        const fiberPosition = targetFiber - fusionConfig.fiberStart;
+        const ssIndex = Math.floor(fiberPosition / fibersPerSS);
+        const targetSS = fusionConfig.ssStart + ssIndex;
+        
+        // Calcular posição dentro do SS
+        const ssStartFiber = fusionConfig.fiberStart + (ssIndex * fibersPerSS);
+        const positionInSS = targetFiber - ssStartFiber + 1;
+        
+        // Calcular cor e grupo
+        let fiberColor, group;
+        
+        if (fibersPerSS <= 8) {
+            // Cenário 1: SS com até 8 fibras
+            fiberColor = fiberColors[positionInSS - 1];
+            group = null;
+        } else {
+            // Cenário 2: SS com mais de 8 fibras
+            const colorIndex = (positionInSS - 1) % 8;
+            fiberColor = fiberColors[colorIndex];
+            const groupIndex = Math.floor((positionInSS - 1) / 8);
+            group = fiberColors[groupIndex];
+        }
+        
+        // Exibir resultado
+        let resultHTML = `<h2 style="margin: 10px 0; font-size: 1.8rem;">SP ${fusionConfig.numSP}</h2>`;
+        resultHTML += `<p style="margin: 5px 0; font-weight: 600; opacity: 0.9;">SS ${targetSS}</p>`;
+        resultHTML += `<p style="margin: 5px 0; font-weight: 600; opacity: 0.9;">Fibra <span style="display: inline-block; width: 20px; height: 20px; background: ${getFiberColorCode(fiberColor)}; border-radius: 50%; vertical-align: middle; margin-left: 5px;"></span> ${fiberColor}</p>`;
+        
+        if (group) {
+            resultHTML += `<p style="margin: 5px 0; font-weight: 600; opacity: 0.9;">Grupo <span style="display: inline-block; width: 20px; height: 20px; background: ${getFiberColorCode(group)}; border-radius: 50%; vertical-align: middle; margin-left: 5px;"></span> ${group}</p>`;
+        }
+        
+        document.getElementById('fusionResult').innerHTML = resultHTML;
+        
+        // Alterar cor do card para corresponder à cor da fibra
+        const resultDisplay = document.getElementById('fusionResultDisplay');
+        const fiberColorHex = getFiberColorCode(fiberColor);
+        resultDisplay.style.background = `linear-gradient(135deg, ${fiberColorHex}, ${adjustColor(fiberColorHex, 20)})`;
+        
+        // Ajustar cor da fonte para fibra branca
+        if (fiberColor === 'Branco') {
+            resultDisplay.style.color = '#000000';
+        } else {
+            resultDisplay.style.color = '#ffffff';
+        }
+    }
+
+    function getFiberColorCode(colorName) {
+        const colorMap = {
+            'Azul': '#0066cc',
+            'Laranja': '#ff6600',
+            'Verde': '#00cc66',
+            'Marrom': '#8b4513',
+            'Cinza': '#808080',
+            'Branco': '#ffffff',
+            'Vermelho': '#cc0000',
+            'Preto': '#000000'
+        };
+        return colorMap[colorName] || '#cccccc';
+    }
+
+    function adjustColor(hex, percent) {
+        // Converter hex para RGB
+        const num = parseInt(hex.replace('#', ''), 16);
+        const amt = Math.round(2.55 * percent);
+        const R = (num >> 16) + amt;
+        const G = (num >> 8 & 0x00FF) + amt;
+        const B = (num & 0x0000FF) + amt;
+        
+        // Garantir que os valores estejam no intervalo 0-255
+        const newR = Math.min(255, Math.max(0, R));
+        const newG = Math.min(255, Math.max(0, G));
+        const newB = Math.min(255, Math.max(0, B));
+        
+        // Converter de volta para hex
+        return '#' + (0x1000000 + newR * 0x10000 + newG * 0x100 + newB).toString(16).slice(1);
+    }
+
+    function goToDGOICStep2() {
+        const num = parseInt(document.getElementById('numSP').value);
+        if (isNaN(num) || num < 1 || num > 12) { alert('Quantidade de SP inválida. Informe um valor de 1 a 12.'); return; }
+        const container = document.getElementById('spInputs');
+        container.innerHTML = '';
+        for (let i = 1; i <= num; i++) {
+            container.innerHTML += `
+                <div class="dgoi-card">
+                    <h4><span>📦 SP #${i}</span></h4>
+                    <div class="input-group">
+                        <label>Número do SP</label>
+                        <div class="input-wrapper"><input type="number" class="sp-num" placeholder="" onchange="validateSPNumbers()"></div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div class="input-group" style="margin-bottom:0">
+                            <label>SS de:</label>
+                            <div class="input-wrapper">
+                                <select class="sp-ss-start" onchange="calculateSSCount(${i})">
+                                    <option value="">Selecione...</option>
+                                    <option value="1">SS 1</option>
+                                    <option value="2">SS 2</option>
+                                    <option value="3">SS 3</option>
+                                    <option value="4">SS 4</option>
+                                    <option value="5">SS 5</option>
+                                    <option value="6">SS 6</option>
+                                    <option value="7">SS 7</option>
+                                    <option value="8">SS 8</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-group" style="margin-bottom:0">
+                            <label>Até o SS:</label>
+                            <div class="input-wrapper">
+                                <select class="sp-ss-end" onchange="calculateSSCount(${i})">
+                                    <option value="">Selecione...</option>
+                                    <option value="1">SS 1</option>
+                                    <option value="2">SS 2</option>
+                                    <option value="3">SS 3</option>
+                                    <option value="4">SS 4</option>
+                                    <option value="5">SS 5</option>
+                                    <option value="6">SS 6</option>
+                                    <option value="7">SS 7</option>
+                                    <option value="8">SS 8</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Início da contagem do SS</label>
+                        <div class="input-wrapper">
+                            <select class="sp-start-fiber" onchange="calculateSSCount(${i})">
+                                <option value="">Selecione...</option>
+                                <option value="1">1</option>
+                                <option value="9">9</option>
+                                <option value="17">17</option>
+                                <option value="25">25</option>
+                                <option value="33">33</option>
+                                <option value="41">41</option>
+                                <option value="49">49</option>
+                                <option value="57">57</option>
+                                <option value="65">65</option>
+                                <option value="73">73</option>
+                                <option value="81">81</option>
+                                <option value="89">89</option>
+                                <option value="97">97</option>
+                                <option value="105">105</option>
+                                <option value="113">113</option>
+                                <option value="121">121</option>
+                                <option value="129">129</option>
+                                <option value="137">137</option>
+                                <option value="145">145</option>
+                                <option value="153">153</option>
+                                <option value="161">161</option>
+                                <option value="169">169</option>
+                                <option value="177">177</option>
+                                <option value="185">185</option>
+                                <option value="193">193</option>
+                                <option value="201">201</option>
+                                <option value="209">209</option>
+                                <option value="217">217</option>
+                                <option value="225">225</option>
+                                <option value="233">233</option>
+                                <option value="241">241</option>
+                                <option value="249">249</option>
+                                <option value="257">257</option>
+                                <option value="265">265</option>
+                                <option value="273">273</option>
+                                <option value="281">281</option>
+                                <option value="289">289</option>
+                                <option value="297">297</option>
+                                <option value="305">305</option>
+                                <option value="313">313</option>
+                                <option value="321">321</option>
+                                <option value="329">329</option>
+                                <option value="337">337</option>
+                                <option value="345">345</option>
+                                <option value="353">353</option>
+                                <option value="361">361</option>
+                                <option value="369">369</option>
+                                <option value="377">377</option>
+                                <option value="385">385</option>
+                                <option value="393">393</option>
+                                <option value="401">401</option>
+                                <option value="409">409</option>
+                                <option value="417">417</option>
+                                <option value="425">425</option>
+                                <option value="433">433</option>
+                                <option value="441">441</option>
+                                <option value="449">449</option>
+                                <option value="457">457</option>
+                                <option value="465">465</option>
+                                <option value="473">473</option>
+                                <option value="481">481</option>
+                                <option value="489">489</option>
+                                <option value="497">497</option>
+                                <option value="505">505</option>
+                                <option value="513">513</option>
+                                <option value="521">521</option>
+                                <option value="529">529</option>
+                                <option value="537">537</option>
+                                <option value="545">545</option>
+                                <option value="553">553</option>
+                                <option value="561">561</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="background: #e3f2fd; padding: 8px; border-radius: 8px; margin-top: 8px;">
+                        <p style="margin: 0; font-size: 0.8rem; color: #1976d2; font-weight: 600;">
+                            Total de SS: <span class="sp-ss-total" id="ssTotal${i}">0</span>
+                        </p>
+                    </div>
+                </div>`;
+        }
+        showStep('dgoiStep2');
+    }
+
+    function calculateSSCount(spIndex) {
+        const startSelect = document.querySelector(`#spInputs .dgoi-card:nth-child(${spIndex}) .sp-ss-start`);
+        const endSelect = document.querySelector(`#spInputs .dgoi-card:nth-child(${spIndex}) .sp-ss-end`);
+        const start = parseInt(startSelect.value) || 0;
+        const end = parseInt(endSelect.value) || 0;
+
+        // Limpar e repopular opções para 'Até o SS:' baseado no 'SS de:'
+        endSelect.innerHTML = '<option value="">Selecione...</option>';
+        for (let i = 1; i <= 8; i++) {
+            if (i >= start) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = `SS ${i}`;
+                endSelect.appendChild(option);
+            }
+        }
+        
+        // Manter o valor selecionado anteriormente se ainda for válido
+        if (end >= start) {
+            endSelect.value = end;
+        } else {
+            endSelect.value = "";
+        }
+
+        if (start > 0 && end >= start) {
+            const total = (end - start) + 1;
+            document.getElementById(`ssTotal${spIndex}`).textContent = total;
+        } else {
+            document.getElementById(`ssTotal${spIndex}`).textContent = '0';
+        }
+    }
+
+    function validateSPNumbers() {
+        const values = Array.from(document.querySelectorAll('.sp-num')).map(i => i.value).filter(v => v !== "");
+        const hasDupes = new Set(values).size !== values.length;
+        document.getElementById('sp-error-dupe').style.display = hasDupes ? 'block' : 'none';
+        return !hasDupes;
+    }
+
+    function goToDGOICStep3() {
+        if (!validateSPNumbers()) { alert('Existem números de SP repetidos. Corrija para continuar.'); return; }
+        
+        // Validar se todos os SP têm configuração de SS válida
+        const spCards = document.querySelectorAll('#spInputs .dgoi-card');
+        let validConfig = true;
+        
+        for (let i = 0; i < spCards.length; i++) {
+            const start = parseInt(spCards[i].querySelector('.sp-ss-start').value) || 0;
+            const end = parseInt(spCards[i].querySelector('.sp-ss-end').value) || 0;
+            const startFiber = parseInt(spCards[i].querySelector('.sp-start-fiber').value) || 0;
+            
+            if (start < 1 || end < start || startFiber < 1) {
+                validConfig = false;
+                break;
+            }
+        }
+        
+        if (!validConfig) {
+            alert('Por favor, informe valores válidos para início da fibra e intervalo de SS em todos os SPs.');
+            return;
+        }
+        
+        const spNums = Array.from(document.querySelectorAll('.sp-num')).map(i => parseInt(i.value));
+        const ssStarts = Array.from(document.querySelectorAll('.sp-ss-start')).map(i => parseInt(i.value));
+        const ssEnds = Array.from(document.querySelectorAll('.sp-ss-end')).map(i => parseInt(i.value));
+        const startFibers = Array.from(document.querySelectorAll('.sp-start-fiber')).map(i => parseInt(i.value));
+        
+        // Criar configuração dos SPs com todos os SS
+        config.sps = [];
+        for (let i = 0; i < spNums.length; i++) {
+            const sp = {
+                number: spNums[i],
+                startFiber: startFibers[i],
+                ssStart: ssStarts[i],
+                ssEnd: ssEnds[i],
+                sss: []
+            };
+            
+            // Adicionar todos os SS deste SP
+            for (let ss = ssStarts[i]; ss <= ssEnds[i]; ss++) {
+                sp.sss.push({ id: ss, color: '' });
+            }
+            
+            config.sps.push(sp);
+        }
+        
+        // Ordenar SPs por número
+        config.sps.sort((a, b) => a.number - b.number);
+        
+        // Calcular total de SS
+        config.totalSS = config.sps.reduce((acc, sp) => acc + sp.sss.length, 0);
+        
+        // Gerar campos de cores sem exibir números dos SS
+        const container = document.getElementById('colorInputs');
+        container.innerHTML = '';
+        for (let i = 1; i <= config.totalSS; i++) {
+            container.innerHTML += `<div class="dgoi-card">
+                <h4><span>🎨</span> Cor ${i}</h4>
+                <div class="input-group">
+                    <label>Selecione a Cor</label>
+                    <div class="color-picker-wrapper">
+                        <button type="button" class="global-color-select color-choice-trigger" data-color="" aria-label="Selecionar cor">Selecione...</button>
+                        <div class="color-picker-popover" role="dialog" aria-modal="true" aria-label="Selecionar cor">
+                            <div class="color-picker-header">
+                                <span>Selecionar</span>
+                                <button type="button" class="color-picker-close" aria-label="Fechar">×</button>
+                            </div>
+                            <div class="color-picker-list">
+                                ${colorsList.map(color => `<button type="button" class="color-option-row" data-color="${color}" style="background:${ssColorStyles[color].background};color:${ssColorStyles[color].text};">${color}</button>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+        bindColorPickers();
+        updateColorOptions();
+        showStep('dgoiStep3');
+    }
+
+    function bindColorPickers() {
+        document.querySelectorAll('.color-choice-trigger').forEach(button => {
+            const popover = button.parentElement.querySelector('.color-picker-popover');
+            if (!popover) return;
+
+            button.addEventListener('click', (event) => {
+                event.stopPropagation();
+                document.querySelectorAll('.color-picker-popover').forEach(p => p.classList.remove('open'));
+                popover.classList.add('open');
+            });
+
+            const closeButton = popover.querySelector('.color-picker-close');
+            if (closeButton) {
+                closeButton.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    popover.classList.remove('open');
+                });
+            }
+
+            popover.querySelectorAll('.color-option-row').forEach(option => {
+                option.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    const pickedColor = option.dataset.color;
+                    button.dataset.color = pickedColor;
+                    button.textContent = pickedColor;
+                    popover.classList.remove('open');
+                    updateColorOptions();
+                });
+            });
+        });
+
+        document.addEventListener('click', (event) => {
+            const target = event.target;
+            if (!target.closest('.color-picker-popover') && !target.closest('.color-choice-trigger')) {
+                document.querySelectorAll('.color-picker-popover').forEach(p => p.classList.remove('open'));
+            }
+        });
+    }
+
+    function updateColorOptions() {
+        const buttons = document.querySelectorAll('.color-choice-trigger');
+        const selectedColors = Array.from(buttons).map(s => s.dataset.color).filter(v => v !== "");
+        buttons.forEach(button => {
+            const currentValue = button.dataset.color || "";
+            const selectedStyle = ssColorStyles[currentValue];
+            button.textContent = currentValue || 'Selecione...';
+            button.style.backgroundColor = selectedStyle ? selectedStyle.background : '#f8fafc';
+            button.style.color = selectedStyle ? selectedStyle.text : '#52677c';
+            button.style.fontWeight = selectedStyle ? '800' : '700';
+            button.style.borderColor = selectedStyle ? selectedStyle.background : 'rgba(17, 24, 39, 0.12)';
+
+            const popover = button.parentElement.querySelector('.color-picker-popover');
+            if (popover) {
+                const rows = popover.querySelectorAll('.color-option-row');
+                rows.forEach(row => {
+                    const isSelected = row.dataset.color === currentValue;
+                    row.classList.toggle('selected', isSelected);
+                    row.disabled = selectedColors.includes(row.dataset.color) && !isSelected;
+                    row.style.opacity = row.disabled ? '0.45' : '1';
+                    row.style.cursor = row.disabled ? 'not-allowed' : 'pointer';
+                });
+            }
+        });
+    }
+
+    function goToDGOICStep4() {
+        const selects = document.querySelectorAll('.color-choice-trigger');
+        if (Array.from(selects).some(s => !s.dataset.color || s.dataset.color === "")) { alert("Selecione todas as cores."); return; }
+        
+        const selectedColors = Array.from(selects).map(s => s.dataset.color);
+        const orderedColors = [...selectedColors].sort((a, b) => colorsList.indexOf(a) - colorsList.indexOf(b));
+        
+        // Associar cores aos SS seguindo ordem: SP crescente, SS crescente
+        let colorIndex = 0;
+        config.sps.forEach(sp => {
+            sp.sss.forEach(ss => {
+                ss.color = orderedColors[colorIndex];
+                colorIndex++;
+            });
+        });
+        
+        // Preencher select de SPs para consulta
+        document.getElementById('targetSPSelect').innerHTML = config.sps.map(sp => `<option value="${sp.number}">SP ${sp.number}</option>`).join('');
+        showStep('dgoiStep4');
+    }
+
+    function calculateDGOIC() {
+        const targetSPNum = parseInt(document.getElementById('targetSPSelect').value);
+        const targetFiber = parseInt(document.getElementById('targetFiber').value);
+        const sp = config.sps.find(s => s.number === targetSPNum);
+        if (!sp) return;
+
+        if (isNaN(targetFiber)) {
+            alert('Informe um número de fibra válido.');
+            return;
+        }
+
+        const maxFiber = sp.startFiber + (sp.sss.length * 8) - 1;
+        if (targetFiber < sp.startFiber || targetFiber > maxFiber) {
+            document.getElementById('error4').style.display = 'block';
+            alert(`Fibra fora do intervalo deste SP. Intervalo: ${sp.startFiber} a ${maxFiber}.`);
+            return;
+        }
+        
+        // Calcular posição relativa da fibra considerando o início da contagem
+        const relativePosition = targetFiber - sp.startFiber + 1;
+        
+        // Encontrar qual SS contém a fibra (assumindo 8 fibras por SS)
+        const ssIndex = Math.floor((relativePosition - 1) / 8);
+        
+        if (ssIndex >= 0 && ssIndex < sp.sss.length && relativePosition > 0) {
+            document.getElementById('error4').style.display = 'none';
+            const ss = sp.sss[ssIndex];
+            const anilha = ((relativePosition - 1) % 8) + 1;
+            const colorStyles = {
+                'Verde': { background: '#16803c', text: '#ffffff' },
+                'Amarelo': { background: '#f2c500', text: '#242424' },
+                'Branco': { background: '#f4f4f4', text: '#242424' },
+                'Azul': { background: '#1769aa', text: '#ffffff' },
+                'Vermelho': { background: '#c62828', text: '#ffffff' },
+                'Violeta': { background: '#7b1fa2', text: '#ffffff' },
+                'Marrom': { background: '#795548', text: '#ffffff' },
+                'Rosa': { background: '#d81b60', text: '#ffffff' },
+                'Preto': { background: '#202124', text: '#ffffff' },
+                'Cinza': { background: '#70757a', text: '#ffffff' },
+                'Laranja': { background: '#ef6c00', text: '#ffffff' },
+                'Água Marinha': { background: '#008b8b', text: '#ffffff' }
+            };
+            const selectedColor = colorStyles[ss.color] || { background: '#1976d2', text: '#ffffff' };
+            const resultCard = document.getElementById('dgoiResultCard');
+            resultCard.style.background = selectedColor.background;
+            resultCard.style.color = selectedColor.text;
+            document.getElementById('resultContent').innerHTML = `<h2 class="dgoi-result-fiber">Fibra ${targetFiber}</h2><p class="dgoi-result-details">SP ${sp.number} | SS ${ss.id} | ${ss.color}</p><div class="dgoi-result-anilha"><span class="dgoi-result-anilha-label">ANILHA</span><span class="dgoi-result-anilha-number">${anilha}</span></div>`;
+            showStep('dgoiResult');
+        } else { 
+            document.getElementById('error4').style.display = 'block'; 
+        }
+    }
+</script>
+</body>
+</html>
